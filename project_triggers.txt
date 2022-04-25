@@ -1,3 +1,0 @@
-triggers
-1) order count automatic update
-2) new date insert
