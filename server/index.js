@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -24,14 +25,14 @@ app.use(bodyParser.json({ type: 'application/*+json' }))
 function postTrimmer(req, res, next) {
     if (req.method === 'POST') {
         for (const [key, value] of Object.entries(req.body)) {
-            if (typeof(value) === 'string')
+            if (typeof (value) === 'string')
                 req.body[key] = value.trim();
         }
     }
     next();
 }
 
-app.get("/editprofile/:username", async(req, res) => {
+app.get("/editprofile/:username", async (req, res) => {
     try {
         var address = 0;
         if (req.query.address) {
@@ -51,7 +52,13 @@ app.get("/editprofile/:username", async(req, res) => {
     }
 });
 
-app.post("/assign_tbl/:tbl_id", async(req, res) => {
+// app.get("/dummy", async (req, res) => {
+//     res.status(200).send({ message: "Works" });
+//     const playerBasicInfo = await pool.query("select * from cart");
+//     console.log(playerBasicInfo);
+// })
+
+app.post("/assign_tbl/:tbl_id", async (req, res) => {
     var id = req.params.tbl_id;
     pool.query("update table_info set Status = 'Not Free' where TableID = $1", [id], (err, results) => {
         if (err) {
@@ -63,7 +70,7 @@ app.post("/assign_tbl/:tbl_id", async(req, res) => {
     });
 });
 
-app.get("/insuff_ing_off/:tbl_id", async(req, res) => {
+app.get("/insuff_ing_off/:tbl_id", async (req, res) => {
     try {
         var id = req.params.tbl_id;
         const InsuffIngredsOff = await pool.query(`select inv.ItemID,
@@ -78,7 +85,7 @@ app.get("/insuff_ing_off/:tbl_id", async(req, res) => {
     }
 });
 
-app.get("/insuff_ing_onl/:usernme", async(req, res) => {
+app.get("/insuff_ing_onl/:usernme", async (req, res) => {
     try {
         var id = req.params.usernme;
         const InsuffIngredsOnl = await pool.query(`select inv.ItemID,
@@ -93,7 +100,7 @@ app.get("/insuff_ing_onl/:usernme", async(req, res) => {
     }
 });
 
-app.get("/pend_ords", async(req, res) => {
+app.get("/pend_ords", async (req, res) => {
     try {
         const PendingOrds = await pool.query(`select O1.OrderID,DishID, Quantity from Order_items
     as O1 inner join Order_info as O2 on O1.OrderID=O2.OrderID where
@@ -106,7 +113,7 @@ app.get("/pend_ords", async(req, res) => {
     }
 });
 
-app.get("/view_menu", async(req, res) => {
+app.get("/view_menu", async (req, res) => {
     try {
         const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where
     Available='Yes' order by DishID ASC, Category ASC;`);
@@ -116,7 +123,7 @@ app.get("/view_menu", async(req, res) => {
     }
 });
 
-app.get("/ord_history/:usrnme", async(req, res) => {
+app.get("/ord_history/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
         const History = await pool.query(`select OrderID, Status, Time from Order_info where CustomerID=$1;`, [id]);
@@ -126,7 +133,7 @@ app.get("/ord_history/:usrnme", async(req, res) => {
     }
 });
 
-app.get("/curr_ords/:usrnme", async(req, res) => {
+app.get("/curr_ords/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
         const DelOrdList = await pool.query(`select OrderID, Delivery_Man.Name, Status, Time
@@ -138,7 +145,7 @@ app.get("/curr_ords/:usrnme", async(req, res) => {
     }
 });
 
-app.get("/onl_cook_ords", async(req, res) => {
+app.get("/onl_cook_ords", async (req, res) => {
     try {
         const OnlCookOrds = await pool.query(`select OrderID, Zip, Time from Order_info as o inner join Customer as
     c on o.CustomerID=c.Username where Status='Cooked';`);
@@ -148,7 +155,7 @@ app.get("/onl_cook_ords", async(req, res) => {
     }
 });
 
-app.get("/del_ppl/:pincode", async(req, res) => {
+app.get("/del_ppl/:pincode", async (req, res) => {
     try {
         var pincode = req.params.pincode;
         const DelPpl = await pool.query(`select Username,Name,Contact from Delivery_Man where Available='Yes'
@@ -161,7 +168,7 @@ app.get("/del_ppl/:pincode", async(req, res) => {
     }
 });
 
-app.get("/coupons/:usrnme", async(req, res) => {
+app.get("/coupons/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
         const Coupons = await pool.query(`select couponid,expiry date,category,discount,min_bill,max_discount from
@@ -175,7 +182,7 @@ app.get("/coupons/:usrnme", async(req, res) => {
     }
 });
 
-app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
+app.get("/login/:tbl/:usrnme/:pass", async (req, res) => {
     try {
         var tbl = req.params.tbl;
         var usrnme = req.params.usrnme;
@@ -188,7 +195,7 @@ app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
     }
 });
 
-app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, res) => {
+app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async (req, res) => {
     var addr = req.params.addr;
     var usrnme = req.params.usrnme;
     var nme = req.params.nme;
@@ -206,7 +213,7 @@ app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, res) => {
     });
 });
 
-app.post("/editprofile/:tbl/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, res) => {
+app.post("/editprofile/:tbl/:addr/:usrnme/:nme/:contact/:pass/:zip", async (req, res) => {
     var addr = req.params.addr;
     var usrnme = req.params.usrnme;
     var nme = req.params.nme;
@@ -229,7 +236,7 @@ app.post("/editprofile/:tbl/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, 
     });
 });
 
-app.post("/insert_table_cart/:tblid/:dishid/:quantity", async(req, res) => {
+app.post("/insert_table_cart/:tblid/:dishid/:quantity", async (req, res) => {
     var tblid = req.params.tblid;
     var dishid = req.params.dishid;
     var quantity = req.params.quantity;
@@ -245,7 +252,7 @@ app.post("/insert_table_cart/:tblid/:dishid/:quantity", async(req, res) => {
     });
 });
 
-app.post("/sub_ingreds_tbl_cart/:tblid", async(req, res) => {
+app.post("/sub_ingreds_tbl_cart/:tblid", async (req, res) => {
     var tblid = req.params.tblid;
     pool.query(`with consumed as (select ing.ItemID,
     sum(CartQuantity*ing.Quantity) as quantity from Table_cart as tc inner
@@ -261,7 +268,7 @@ app.post("/sub_ingreds_tbl_cart/:tblid", async(req, res) => {
     });
 });
 
-app.post("/insert_cart/:usrnme/:dishid/:quantity", async(req, res) => {
+app.post("/insert_cart/:usrnme/:dishid/:quantity", async (req, res) => {
     var usrnme = req.params.usrnme;
     var dishid = req.params.dishid;
     var quantity = req.params.quantity;
@@ -277,7 +284,7 @@ app.post("/insert_cart/:usrnme/:dishid/:quantity", async(req, res) => {
     });
 });
 
-app.post("/sub_ingreds_cart/:usrnme", async(req, res) => {
+app.post("/sub_ingreds_cart/:usrnme", async (req, res) => {
     var usrnme = req.params.usrnme;
     pool.query(`with consumed as (select ing.ItemID,
     sum(tc.Quantity*ing.Quantity) as quantity from Cart as tc inner join
@@ -294,7 +301,7 @@ app.post("/sub_ingreds_cart/:usrnme", async(req, res) => {
     });
 });
 
-app.post("/checkout_offl/:tblid", async(req, res) => {
+app.post("/checkout_offl/:tblid", async (req, res) => {
     var tblid = req.params.tblid;
     pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [id], (err, results) => {
         if (err) {
@@ -314,7 +321,7 @@ app.post("/checkout_offl/:tblid", async(req, res) => {
     });
 });
 
-app.post("/set_addr/:usrnme/:addr/:zip", async(req, res) => {
+app.post("/set_addr/:usrnme/:addr/:zip", async (req, res) => {
     var usrnme = req.params.usrnme;
     var addr = req.params.addr;
     var zip = req.params.zip;
@@ -329,7 +336,7 @@ app.post("/set_addr/:usrnme/:addr/:zip", async(req, res) => {
     });
 });
 
-app.post("/ins_ord/:usrnme/:timestamp", async(req, res) => {
+app.post("/ins_ord/:usrnme/:timestamp", async (req, res) => {
     var usrnme = req.params.usrnme;
     var timestamp = req.params.timestamp;
     pool.query(`insert into Order_info values(NULL, $1,'Received',
@@ -343,7 +350,7 @@ app.post("/ins_ord/:usrnme/:timestamp", async(req, res) => {
     });
 });
 
-app.post("/onl_ords_update/:ordid", async(req, res) => {
+app.post("/onl_ords_update/:ordid", async (req, res) => {
     var ord = req.params.ordid;
     pool.query(`update Order_info set Status = 'Cooked' where OrderID = $1;`, [ord], (err, results) => {
         if (err) {
@@ -355,7 +362,7 @@ app.post("/onl_ords_update/:ordid", async(req, res) => {
     });
 });
 
-app.post("/offl_ords_update/:tblid/:dishid", async(req, res) => {
+app.post("/offl_ords_update/:tblid/:dishid", async (req, res) => {
     var tblid = req.params.tblid;
     var dishid = req.params.dishid;
     pool.query(`update Table_cart set CookedQuantity = CookedQuantity+
@@ -370,7 +377,7 @@ app.post("/offl_ords_update/:tblid/:dishid", async(req, res) => {
     });
 });
 
-app.post("/add_items/:quantity/:itemid/:today", async(req, res) => {
+app.post("/add_items/:quantity/:itemid/:today", async (req, res) => {
     var quantity = req.params.quantity;
     var itemid = req.params.itemid;
     var today = req.params.today;
@@ -393,7 +400,7 @@ app.post("/add_items/:quantity/:itemid/:today", async(req, res) => {
     });
 });
 
-app.post("/update_status_menu/:dishid/:avbl", async(req, res) => {
+app.post("/update_status_menu/:dishid/:avbl", async (req, res) => {
     var avbl = req.params.avbl;
     var dishid = req.params.dishid;
     pool.query(`update Dish set Available = $2 where DishID = $1;`, [dishid, avbl], (err, results) => {
@@ -406,7 +413,7 @@ app.post("/update_status_menu/:dishid/:avbl", async(req, res) => {
     });
 });
 
-app.post("/insert_dish/:name/:price/:avbl/:nv/:cat", async(req, res) => {
+app.post("/insert_dish/:name/:price/:avbl/:nv/:cat", async (req, res) => {
     var name = req.params.name;
     var price = req.params.price;
     var avbl = req.params.avbl;
@@ -422,7 +429,7 @@ app.post("/insert_dish/:name/:price/:avbl/:nv/:cat", async(req, res) => {
     });
 });
 
-app.post("/del_dish/:dishid", async(req, res) => {
+app.post("/del_dish/:dishid", async (req, res) => {
     var dishid = req.params.dishid;
     pool.query(`delete from Dish where DishID=$1`, [dishid], (err, results) => {
         if (err) {
@@ -434,7 +441,7 @@ app.post("/del_dish/:dishid", async(req, res) => {
     });
 });
 
-app.post("/apply_offer/:usrnme/:coup", async(req, res) => {
+app.post("/apply_offer/:usrnme/:coup", async (req, res) => {
     var usrnme = req.params.usrnme;
     var coup = req.params.coup;
     pool.query(`Insert into Cust_Coup values($1,$2);`, [usrnme, coup], (err, results) => {
@@ -448,7 +455,7 @@ app.post("/apply_offer/:usrnme/:coup", async(req, res) => {
 });
 
 
-app.get("/matches", async(req, res) => {
+app.get("/matches", async (req, res) => {
     try {
         const allMatches = await pool.query("select match_id, t1.team_name as team1, t2.team_name as team2, venue.venue_name, venue.city_name, t3.team_name as match_winner from match, team as t1, team as t2, venue, team as t3 where match.team1 = t1.team_id and match.team2 = t2.team_id and match.match_winner = t3.team_id and match.venue_id = venue.venue_id;");
         res.json(allMatches.rows);
@@ -457,7 +464,7 @@ app.get("/matches", async(req, res) => {
     }
 });
 
-app.get("/matches/:match_id", async(req, res) => {
+app.get("/matches/:match_id", async (req, res) => {
     try {
         const { match_id } = req.params;
         const battingDetails = await pool.query("with all_batsmen as ( select distinct striker as batter from ball_by_ball where match_id = $1 UNION select distinct non_striker as batter from ball_by_ball where match_id = $1 ), score_info as ( select innings_no, striker, sum(runs_scored) as runs, count(*) filter (where runs_scored=4) as no_fours, count(*) filter (where runs_scored=6) as no_sixes, count(*) as balls_faced from ball_by_ball where match_id = $1 group by striker, innings_no ) select innings_no, all_batsmen.batter as batter, player_name, COALESCE(score_info.runs, 0) as runs, COALESCE(score_info.no_fours, 0) as no_fours, COALESCE(score_info.no_sixes, 0) as no_sixes, COALESCE(score_info.balls_faced, 0) as balls_faced from all_batsmen left outer join score_info on all_batsmen.batter = score_info.striker, player where all_batsmen.batter = player.player_id;", [match_id]);
@@ -476,7 +483,7 @@ app.get("/matches/:match_id", async(req, res) => {
 });
 
 
-app.get("/players/:player_id", async(req, res) => {
+app.get("/players/:player_id", async (req, res) => {
     try {
         const { player_id } = req.params;
 
@@ -493,7 +500,7 @@ app.get("/players/:player_id", async(req, res) => {
 });
 
 
-app.get("/pointstable/:year", async(req, res) => {
+app.get("/pointstable/:year", async (req, res) => {
     try {
         const { year } = req.params;
         const pointsTableInfo = await pool.query("select team_name,Mat,Won,Mat-Won as Lost,0 as Tied, ROUND(coalesce(sum(case when team_1=team_id then runs_1 else runs_2 end),0)*1.0/coalesce(sum(case when team_id=team_1 then max_1 else max_2 end),1)-coalesce(sum(case when team_2=team_id then runs_1 else runs_2 end),0)*1.0/coalesce(sum(case when team_id=team_2 then max_1 else max_2 end),1),3) as NR,2*Won as pts from (select team_name,team_id,coalesce(count(match_id),0) as Mat,coalesce(count(match_id) filter(where match_winner=team_id),0) as Won from team left outer join (select * from match where season_year = $1) as match1 on team_id=team1 or team_id=team2 group by (team_id)) as w left outer join (select b.match_id,case when win_type='runs' then match_winner else team1+team2-match_winner end as team_1,coalesce(sum(runs_scored+extra_runs) filter(where innings_no=1),0) as runs_1,coalesce(max(over_id) filter(where innings_no=1),0) as max_1,case when win_type='wickets' then match_winner else team1+team2-match_winner end as team_2,coalesce(sum(runs_scored+extra_runs) filter(where innings_no=2),0) as runs_2,coalesce(max(over_id) filter(where innings_no=2),0) as max_2 from match as m inner join ball_by_ball as b on b.match_id=m.match_id where season_year = $1 group by (b.match_id,win_type,team1,team2,match_winner)) as r on team_id=team_1 or team_id=team_2 where Mat<>0 group by (team_name,Mat,Won) order by pts desc;", [year]);
@@ -504,7 +511,7 @@ app.get("/pointstable/:year", async(req, res) => {
 });
 
 
-app.get("/venues", async(req, res) => {
+app.get("/venues", async (req, res) => {
     try {
         const allVenues = await pool.query("select * from venue;");
         res.json(allVenues.rows);
@@ -514,7 +521,7 @@ app.get("/venues", async(req, res) => {
 });
 
 
-app.get("/venue/:venue_id", async(req, res) => {
+app.get("/venue/:venue_id", async (req, res) => {
     try {
         const { venue_id } = req.params;
 
@@ -533,12 +540,12 @@ app.get("/venue/:venue_id", async(req, res) => {
     }
 });
 
-app.post("/venues/add", async(req, res) => {
+app.post("/venues/add", async (req, res) => {
 
     const { venue_name, city_name, country_name, capacity } = req.body
     pool.query("INSERT INTO venue(venue_name,city_name,country_name,capacity) values ($1,$2,$3,$4)", [venue_name, city_name, country_name, capacity], (err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
             res.status(400).send({ message: 'pk already exists. Please try again' });
         } else {
             res.status(200).json(results.rows);
@@ -546,7 +553,7 @@ app.post("/venues/add", async(req, res) => {
     });
 });
 
-
-app.listen(5000, () => {
-    console.log("Started");
+port = 5000;
+app.listen(port, () => {
+    console.log("Started on port", port);
 });
