@@ -11,6 +11,8 @@ import ListMenu from './components/ListMenu';
 import Register from './components/Register';
 import Login from './components/Login';
 import DeliveryManager from './components/DeliveryManager/DeliveryManager';
+import DeliveryManagerListPersons from './components/DeliveryManager/DeliveryManagerListPersons';
+
 function App() {
   return (
     <BrowserRouter>
