@@ -225,8 +225,7 @@ app.get("/pend_ords", async (req, res) => {
 
 app.get("/view_menu", async (req, res) => {
     try {
-        const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where
-    Available='Yes' order by Category ASC, Non_Veg DESC;`);
+        const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where Available='Yes' order by Category ASC, Non_Veg DESC;`);
         res.json(Menu.rows);
     } catch (err) {
         console.error(err.message);
