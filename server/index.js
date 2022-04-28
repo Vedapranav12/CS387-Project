@@ -1,10 +1,23 @@
 require('dotenv').config();
 const express = require("express");
-const app = express();
 const cors = require("cors");
-const pool = require("./db");
+const session = require('express-session');
+const app = express();
+const Pool = require("pg").Pool;
+
+const conObject = {
+    user: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+    database: process.env.POSTGRES_DB,
+};
+
+const pool = new Pool(conObject);
 
 const pg = require('pg');
+
+
 pg.types.setTypeParser(pg.types.builtins.INT8, (value) => {
     return parseInt(value);
 });
@@ -15,12 +28,31 @@ pg.types.setTypeParser(pg.types.builtins.NUMERIC, (value) => {
     return parseFloat(value);
 });
 
+const store = new (require('connect-pg-simple')(session))({
+    conObject,
+});
 
-app.use(cors());
+
+app.use(cors({ credentials: true, }));
 app.use(express.json());
 app.use(postTrimmer);
 var bodyParser = require('body-parser')
 app.use(bodyParser.json({ type: 'application/*+json' }))
+app.use(
+    session({
+        store: store,
+        secret: "useenvinstead",
+        saveUninitialized: false,
+        resave: false,
+        cookie: {
+            secure: false,
+            httpOnly: false,
+            sameSite: false,
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+    })
+)
+
 
 function postTrimmer(req, res, next) {
     if (req.method === 'POST') {
@@ -31,6 +63,10 @@ function postTrimmer(req, res, next) {
     }
     next();
 }
+
+app.post('/register', async (req, res) => {
+
+})
 
 app.get("/editprofile/:username", async (req, res) => {
     try {
