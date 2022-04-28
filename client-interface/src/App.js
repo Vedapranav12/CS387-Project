@@ -12,25 +12,30 @@ import Register from './components/Register';
 import Login from './components/Login';
 import DeliveryManager from './components/DeliveryManager/DeliveryManager';
 import DeliveryManagerListPersons from './components/DeliveryManager/DeliveryManagerListPersons';
-import DeliveryManagerAllPersons from './components/DeliveryManager/DeliveryManagerAllPersons';
-
+import Header from './components/Header';
+import GlobalContext from './providers/GlobalContext';
+import GlobalContextProvider from './providers/GlobalContextProvider';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-
-          <Route path="/login" element={<Login />} />
-          <Route path="/menu" element={<ListMenu />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/deli_manager" element={<DeliveryManager />} />
-          <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} />
-          <Route path="/deli_manager/all_persons" element={<DeliveryManagerAllPersons />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <div>
+      <GlobalContextProvider>
+        <BrowserRouter>
+          <Header />
+          <div>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/menu" element={<ListMenu />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/deli_manager" element={<DeliveryManager />} />
+              <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} />
+              <Route path="/deli_manager/all_persons" element={<DeliveryManagerAllPersons />} />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      </GlobalContextProvider>
+    </div>
   );
 }
 

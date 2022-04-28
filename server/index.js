@@ -108,6 +108,8 @@ app.post('/login', async(req, res) => {
             info = await pool.query("select Username from Delivery_manager where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "DeliveryMan") {
             info = await pool.query("select Username from Delivery_Man where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
+        } else {
+            return res.sendStatus(403);
         }
         const user = info.rows[0];
         req.session.user = {
@@ -133,12 +135,20 @@ app.post('/logout', async(req, res) => {
     }
 })
 
-app.post('/fetch-user', async(req, res) => {
-    if (req.sessionID && req.session.user) {
-        res.status(200);
-        res.json({ user: req.session.user });
+app.post('/fetch-user', async (req, res) => {
+    try {
+        if (req.sessionID && req.session.user) {
+            res.status(200);
+            res.json({ user: req.session.user });
+        }
+        else {
+            res.sendStatus(403);
+        }
     }
-    res.sendStatus(403);
+    catch (err) {
+        console.log(err);
+        res.sendStatus(403);
+    }
 })
 
 

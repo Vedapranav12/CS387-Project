@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GlobalContext from '../providers/GlobalContext.js';
+import GlobalContext from '../providers/GlobalContext';
+// import GlobalContextProvider from '../providers/GlobalContextProvider';
 import { Button } from 'react-bootstrap';
 const axios = require('axios');
 
@@ -13,7 +14,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     Username: '',
     Passcode: '',
-    identifyRole: 'Customer',
+    identifyRole: '',
   });
 
   const submitForm = () => {
@@ -27,7 +28,8 @@ const Login = () => {
       })
       .then((response) => {
         if (response.status === 200) {
-          console.log(response.data.user);
+          console.log("response data user", response);
+          console.log(response);
           globalContext.setUser(response.data.user);
           navigate('/dashboard');
         } else {
@@ -61,6 +63,23 @@ const Login = () => {
         value={formData.Passcode}
         onChange={(e) => setFormData({ ...formData, Passcode: e.target.value })}
       />
+
+      <input
+        type="text"
+        name="identifyRole"
+        list="rolenames"
+        // value={formData.identifyRole}
+        onChange={(e) => setFormData({ ...formData, identifyRole: e.target.value })}
+      />
+      <datalist id="rolenames">
+        <option value="Customer" />
+        <option value="Waiter" />
+        <option value="Chef" />
+        <option value="TableManager" />
+        <option value="DeliveryManager" />
+        <option value="DeliveryMan" />
+      </datalist>
+
 
       <Button text="Login" loading={loading} onClick={submitForm} />
     </div>
