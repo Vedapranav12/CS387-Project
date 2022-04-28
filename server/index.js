@@ -33,7 +33,13 @@ const store = new (require('connect-pg-simple')(session))({
 });
 
 
-app.use(cors({ credentials: true, }));
+app.use(
+    cors({
+        origin: 'http://localhost:3000',
+        methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD'],
+        credentials: true,
+    })
+)
 app.use(express.json());
 app.use(postTrimmer);
 var bodyParser = require('body-parser')
@@ -89,19 +95,19 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     try {
         const { Username, Passcode, identifyRole } = req.body;
+        let info;
         if (identifyRole === "Customer") {
-            console.log(req.body);
-            let info = await pool.query("select Username from Customer where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
+            info = await pool.query("select Username from Customer where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "Waiter") {
-            let info = await pool.query("select Username from Waiter where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+            info = await pool.query("select Username from Waiter where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "Chef") {
-            let info = await pool.query("select Username, Role from Chef where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+            info = await pool.query("select Username, Role from Chef where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "TableManager") {
-            let info = await pool.query("select Username from Table_Manager where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+            info = await pool.query("select Username from Table_Manager where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "DeliveryManager") {
-            let info = await pool.query("select Username from Delivery_manager where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+            info = await pool.query("select Username from Delivery_manager where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "DeliveryMan") {
-            let info = await pool.query("select Username from Delivery_Man where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+            info = await pool.query("select Username from Delivery_Man where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         }
         const user = info.rows[0];
         req.session.user = {
@@ -183,7 +189,7 @@ app.get("/insuff_ing_off/:tbl_id", async (req, res) => {
     Inventory as inv on ing.ItemID=inv.ItemID where CartQuantity>0
     and TableID=$1 group by (inv.ItemID,inv.Quantity) having
     inv.Quantity-sum(CartQuantity*ing.Quantity)< 0;`, [id]);
-        req.json(InsuffIngreds.rows);
+        res.json(InsuffIngreds.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -198,7 +204,7 @@ app.get("/insuff_ing_onl/:usernme", async (req, res) => {
     inv on ing.ItemID=inv.ItemID where c.Quantity>0 and c.CustomerID=$1
     group by (inv.ItemID,inv.Quantity) having
     inv.Quantity-sum(c.Quantity*ing.Quantity)<0;`, [id]);
-        req.json(InsuffIngredsOnl.rows);
+        res.json(InsuffIngredsOnl.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -211,7 +217,7 @@ app.get("/pend_ords", async (req, res) => {
     Status='Received' order by OrderID asc,DishID asc;
     select TableID, DishID, OrderQuantity from Table_cart where OrderQuantity>0
     order by TableID asc, DishID asc;`);
-        req.json(PendingOrds.rows);
+        res.json(PendingOrds.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -220,8 +226,8 @@ app.get("/pend_ords", async (req, res) => {
 app.get("/view_menu", async (req, res) => {
     try {
         const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where
-    Available='Yes' order by DishID ASC, Category ASC;`);
-        req.json(Menu.rows);
+    Available='Yes' order by Category ASC, Non_Veg DESC;`);
+        res.json(Menu.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -231,7 +237,7 @@ app.get("/ord_history/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
         const History = await pool.query(`select OrderID, Status, Time from Order_info where CustomerID=$1;`, [id]);
-        req.json(History.rows);
+        res.json(History.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -243,7 +249,7 @@ app.get("/curr_ords/:usrnme", async (req, res) => {
         const DelOrdList = await pool.query(`select OrderID, Delivery_Man.Name, Status, Time
     from Order_info, Delivery_Man where
     CustomerID=$1 and Status!='Delivered'`, [id]);
-        req.json(DelOrdList.rows);
+        res.json(DelOrdList.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -253,7 +259,7 @@ app.get("/onl_cook_ords", async (req, res) => {
     try {
         const OnlCookOrds = await pool.query(`select OrderID, Zip, Time from Order_info as o inner join Customer as
     c on o.CustomerID=c.Username where Status='Cooked';`);
-        req.json(OnlCookOrds.rows());
+        res.json(OnlCookOrds.rows());
     } catch (err) {
         console.error(err.message);
     }
@@ -266,7 +272,7 @@ app.get("/del_ppl/:pincode", async (req, res) => {
     and Primary_Zip=$1 union select Username,Name,Contact from Delivery_Man
     as dm inner join Secondary as s on dm.Username=s.deliveryID
     where Available='Yes' and Zip=$1 and Primary_Zip!=$1;`, [pincode]);
-        req.json(DelPpl.rows());
+        res.json(DelPpl.rows());
     } catch (err) {
         console.error(err.message);
     }
@@ -280,7 +286,7 @@ app.get("/coupons/:usrnme", async (req, res) => {
     where cc.customerid=$1 and expiry_date>=CURRENT_DATE and couponid
     not in (select couponid from cust_coups as ccc where ccc.username=$1);
     `, [id]);
-        req.json(Coupons.rows());
+        res.json(Coupons.rows());
     } catch (err) {
         console.error(err.message);
     }
@@ -293,7 +299,7 @@ app.get("/login/:tbl/:usrnme/:pass", async (req, res) => {
         var pass = req.params.pass;
         const CheckPerson = await pool.query(`select count(*) from $1 where Username=$2
     and Passcode=crypt($3,Passcode)`, [tbl, usrnme, pass]);
-        req.json(CheckPerson.rows());
+        res.json(CheckPerson.rows());
     } catch (err) {
         console.error(err.message);
     }
