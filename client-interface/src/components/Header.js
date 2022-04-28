@@ -1,5 +1,6 @@
 import React, { useContext, useState, Fragment } from 'react';
 import GlobalContext from '../providers/GlobalContext';
+// import GlobalContextProvider from '../providers/GlobalContextProvider';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
@@ -15,7 +16,7 @@ const Header = () => {
   const logout = () => {
     setLoading(true);
     axios
-      .post(`${process.env.REACT_APP_BASE_URL}/logout`, null, {
+      .post(`http://localhost:5000/logout`, null, {
         withCredentials: true,
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -26,14 +27,14 @@ const Header = () => {
           globalContext.setUser({});
           navigate('/');
         } else {
-          throw new Error()
+          throw new Error();
         }
       })
       .catch((error) => {
-        console.error(`Couldn't log the user out: ${error}`)
+        console.error(`Couldn't log the user out: ${error}`);
       })
       .finally(() => {
-        setLoading(false)
+        setLoading(false);
       });
   }
 
@@ -43,8 +44,8 @@ const Header = () => {
         <h1 className="loader">Loading...</h1>
       ) : (
         <Fragment>
-          <h1>{user.id ? `Logged in as ${user.firstname} ${user.surname}` : 'Not logged in'}</h1>
-          {user.id ? (
+          <h1>{user.Username ? `Logged in as ${user.Username} ${user.identifyRole}` : 'Not logged in'}</h1>
+          {user.Username ? (
             <Button text="Logout" loading={loading} onClick={logout} />
           ) : (
             <Button text="Login" onClick={() => navigate('/login')} />
