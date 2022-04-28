@@ -377,13 +377,11 @@ app.post("/sub_ingreds_tbl_cart/:tblid", async (req, res) => {
     });
 });
 
-app.post("/insert_cart/:usrnme/:dishid/:quantity", async (req, res) => {
-    var usrnme = req.params.usrnme;
-    var dishid = req.params.dishid;
-    var quantity = req.params.quantity;
+app.post("/insert_cart", async (req, res) => {
+  const { usrnme, dishid, quantity } = req.body;
     pool.query(`insert into Cart as tc values($1, $2,
-    $3,0,0) ON conflict ($1,$2) do update set CartQuantity =
-    tc.CartQuantity+quantity;`, [usrnme, dishid, quantity], (err, results) => {
+    $3) ON conflict (CustomerID,DIshID) do update set quantity =
+    tc.quantity+$3;`, [usrnme, dishid, quantity], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
