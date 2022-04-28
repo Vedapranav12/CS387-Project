@@ -65,8 +65,76 @@ function postTrimmer(req, res, next) {
 }
 
 app.post('/register', async (req, res) => {
+    try {
+        const { Address, Username, Name, Contact, Passcode, Zip } = req.body;
+        let info = await pool.query("insert into Customer (Address, Username, Name, Contact, Passcode, Zip) values ($1, $2, $3, $4, crypt($5, gen_salt('bf')), $6) RETURNING *;", [Address, Username, Name, Contact, Passcode, Zip]);
+        if (info.rows.length === 0) {
+            res.sendStatus(403);
+        }
+        const user = info.rows[0];
+        req.session.user = {
+            Username: user.Username || user.username,
+            Role: "None",
+            identifyRole: "Customer",
+        }
+        res.status(200);
+        res.json({ user: req.session.user });
 
+    } catch (err) {
+        console.error(err.message);
+        res.sendStatus(403);
+    }
+});
+
+app.post('/login', async (req, res) => {
+    try {
+        const { Username, Passcode, identifyRole } = req.body;
+        if (identifyRole === "Customer") {
+            console.log(req.body);
+            let info = await pool.query("select Username from Customer where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
+        } else if (identifyRole === "Waiter") {
+            let info = await pool.query("select Username from Waiter where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+        } else if (identifyRole === "Chef") {
+            let info = await pool.query("select Username, Role from Chef where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+        } else if (identifyRole === "TableManager") {
+            let info = await pool.query("select Username from Table_Manager where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+        } else if (identifyRole === "DeliveryManager") {
+            let info = await pool.query("select Username from Delivery_manager where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+        } else if (identifyRole === "DeliveryMan") {
+            let info = await pool.query("select Username from Delivery_Man where Username=$1 and Passcode=crypt($2, Passcode)", [Username, Passcode]);
+        }
+        const user = info.rows[0];
+        req.session.user = {
+            Username: user.Username || user.username,
+            Role: user.Role || user.role || "None",
+            identifyRole: identifyRole,
+        }
+        res.status(200);
+        res.json({ user: req.session.user });
+    } catch (err) {
+        console.log(err);
+        res.sendStatus(403);
+    }
+});
+
+app.post('/logout', async (req, res) => {
+    try {
+        await req.session.destroy();
+        res.sendStatus(200);
+    } catch (err) {
+        console.log(err);
+        rescape.sendStatus(500);
+    }
 })
+
+app.post('/fetch-user', async (req, res) => {
+    if (req.sessionID && req.session.user) {
+        res.status(200);
+        res.json({ user: req.session.user });
+    }
+    res.sendStatus(403);
+})
+
 
 app.get("/editprofile/:username", async (req, res) => {
     try {
