@@ -10,7 +10,7 @@ import Home from './components/Home';
 import ListMenu from './components/ListMenu';
 import Register from './components/Register';
 import Login from './components/Login';
-
+import DeliveryManager from './components/DeliveryManager/DeliveryManager';
 function App() {
   return (
     <BrowserRouter>
@@ -20,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/menu" element={<ListMenu />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/deli_manager" element={<DeliveryManager />} />
         </Routes>
       </div>
     </BrowserRouter>

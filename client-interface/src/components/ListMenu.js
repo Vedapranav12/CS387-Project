@@ -11,7 +11,7 @@ const ListMenu = () => {
       const response = await fetch("http://localhost:5000/view_menu");
       const jsonData = await response.json();
       console.log(jsonData);
-      setDataTable({
+      dataTable({
         columns: [
           {
             label: 'Dish ID',
@@ -29,18 +29,13 @@ const ListMenu = () => {
             label: 'Non Veg',
             field: 'non_veg',
           },
-          {
-            label: 'Category',
-            field: 'category',
-          },
         ],
-        rows: jsonData.map(menu => (
+        rows: jsonData.filter(menu => menu.category === "Desserts").map(menu => (
           {
             dishid: menu.dishid,
             name: menu.name,
             price: menu.price,
             non_veg: menu.non_veg,
-            category: menu.category,
           }
         )),
       });
