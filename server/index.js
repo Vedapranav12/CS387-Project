@@ -354,8 +354,8 @@ app.post("/onl_ords_update/:ordid", async(req, res) => {
         }
     });
 });
-
-app.post("/offl_ords_update/:tblid/:dishid", async(req, res) => {
+s
+app.post("/offl_ord_update/:tblid/:dishid", async(req, res) => {
     var tblid = req.params.tblid;
     var dishid = req.params.dishid;
     pool.query(`update Table_cart set CookedQuantity = CookedQuantity+
@@ -447,6 +447,150 @@ app.post("/apply_offer/:usrnme/:coup", async(req, res) => {
     });
 });
 
+app.post("/hire_chef/:usrnme/:nme/:contact/:salary/:pass/:role", async(req, res) => {
+    var usrnme = req.params.usrnme;
+    var nme = req.params.nme;
+    var contact = req.params.contact;
+    var salary = req.params.salary;
+    var pass = req.params.pass;
+    var role = req.params.role;
+    pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$5);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/hire_waiter/:usrnme/:nme/:contact/:salary/:pass", async(req, res) => {
+    var usrnme = req.params.usrnme;
+    var nme = req.params.nme;
+    var contact = req.params.contact;
+    var salary = req.params.salary;
+    var pass = req.params.pass;
+    pool.query(`insert into Waiter values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/hire_delperson/:usrnme/:nme/:contact/:salary/:pass", async(req, res) => {
+    var usrnme = req.params.usrnme;
+    var nme = req.params.nme;
+    var contact = req.params.contact;
+    var salary = req.params.salary;
+    var pass = req.params.pass;
+    pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/fire_chef/:usrnme", async(req, res) => {
+    var usrnme = req.params.usrnme;
+    pool.query(`delete from Chef where Username=$1`, [usrnme], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/fire_waiter/:usrnme", async(req, res) => {
+    var usrnme = req.params.usrnme;
+    pool.query(`delete from Waiter where Username=$1`, [usrnme], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/fire_delperson/:usrnme", async(req, res) => {
+    var usrnme = req.params.usrnme;
+    pool.query(`delete from Delivery_Man where Username=$1`, [usrnme], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/add_coupons/:expr_date/:usr_cat/:discount/:min_bill/:max_discount", async(req, res) => {
+    var expr_date = req.params.expr_date;
+    var usr_cat = req.params.usr_cat;
+    var discount = req.params.discount;
+    var min_bill = req.params.min_bill;
+    var max_discount = req.params.max_discount;
+    pool.query(`insert into Coupon values($1, $2, $3, $4, $5);`, [expr_date, usr_cat, discount, min_bill, max_discount], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/assign_delperson/:delid/:ordid", async(req, res) => {
+    var delid = req.params.delid;
+    var ordid = req.params.ordid;
+    pool.query(`update Order_info set DeliveryID=$1, Status='Out for delivery'
+    where OrderID=$2;`, [delid, ordid], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+    pool.query(`update Delivery_Man set Available='No' where DeliveryID=$1;`, [delid], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/delivered/:delid/:ordid", async(req, res) => {
+    var delid = req.params.delid;
+    var ordid = req.params.ordid;
+    pool.query(`update Order_info set DeliveryID=NULL, Status='Delivered'
+    where OrderID=$1;`, [ordid], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+    pool.query(`update Delivery_Man set Available='Yes' where DeliveryID=$1;`, [delid], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
 
 app.get("/matches", async(req, res) => {
     try {
