@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import GlobalContext from './GlobalContext'
-const axios = require('axios')
+import React, { useState, useEffect } from 'react';
+import GlobalContext from './GlobalContext';
+// const GlobalContext = React.createContext({ user: {} });
+const axios = require('axios');
 
 const GlobalContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
@@ -23,8 +24,8 @@ const GlobalContextProvider = ({ children }) => {
       })
       .finally(() => {
         setFetchingUser(false);
-      })
-  }, [])
+      });
+  }, []);
 
   return (
     <GlobalContext.Provider
