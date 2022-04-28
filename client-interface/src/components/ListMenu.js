@@ -35,7 +35,7 @@ const ListMenu = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleAdd = async (e) => {
     let usrnme=user.Username; //need to change
     let dishid=parseInt(e.target.value);
     let quantity=1; 
@@ -47,6 +47,24 @@ const ListMenu = () => {
 
     try{
     const response = await fetch("http://localhost:5000/insert_cart/", requestOptions);
+    console.log(response);
+    } catch(err){
+      console.error(err.message);
+    }
+  };
+
+  const handleSubtract = async (e) => {
+    let usrnme=user.Username; //need to change
+    let dishid=parseInt(e.target.value);
+    let quantity=1; 
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ usrnme, dishid, quantity })
+    };
+
+    try{
+    const response = await fetch("http://localhost:5000/remove_cart/", requestOptions);
     console.log(response);
     } catch(err){
       console.error(err.message);
@@ -82,7 +100,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -106,7 +127,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -130,7 +154,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -154,7 +181,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -178,7 +208,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -202,7 +235,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -226,7 +262,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -250,7 +289,10 @@ const ListMenu = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>
-                          <Button onClick={handleSubmit} value={data.dishid}> Add </Button>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td>
                       </tr>
                     ))}
@@ -259,7 +301,7 @@ const ListMenu = () => {
               </div>
             </div>
           </div>
-          {/* <Link to="/cart"> <button type="button"> GO to Cart </button> </Link> */}
+          <Link to="/user_cart"> <button type="button"> GO to Cart </button> </Link>
         </div>
         <br />
       </div>
