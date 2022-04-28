@@ -2,10 +2,14 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { MDBDataTableV5 } from 'mdbreact';
 import { Button } from "react-bootstrap";
+import { useContext } from "react";
+import GlobalContext from '../providers/GlobalContext';
 
 //import './styling.css';
 
 const ListMenu = () => {
+  const globalContext = useContext(GlobalContext);
+  const user = globalContext.user;
   const [Starters_N, set_Starters_N] = useState([]);
   const [Starters_V, set_Starters_V] = useState([]);
   const [Main_Course_N, set_Main_Course_N] = useState([]);
@@ -32,7 +36,7 @@ const ListMenu = () => {
   };
 
   const handleSubmit = async (e) => {
-    let usrnme='whubbocks0'; //need to change
+    let usrnme=user.Username; //need to change
     let dishid=parseInt(e.target.value);
     let quantity=1; 
     const requestOptions = {
