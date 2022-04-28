@@ -21,6 +21,7 @@ function App() {
           <Route path="/menu" element={<ListMenu />} />
           <Route path="/register" element={<Register />} />
           <Route path="/deli_manager" element={<DeliveryManager />} />
+          <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} />
         </Routes>
       </div>
     </BrowserRouter>

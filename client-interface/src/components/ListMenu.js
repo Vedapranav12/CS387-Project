@@ -11,7 +11,7 @@ const ListMenu = () => {
       const response = await fetch("http://localhost:5000/view_menu");
       const jsonData = await response.json();
       console.log(jsonData);
-      dataTable({
+      Starters_N({
         columns: [
           {
             label: 'Dish ID',
@@ -30,12 +30,200 @@ const ListMenu = () => {
             field: 'non_veg',
           },
         ],
-        rows: jsonData.filter(menu => menu.category === "Desserts").map(menu => (
+        rows: jsonData.filter(menu => (menu.category === "Starters" && menu.Non_Veg==="Yes")).map(menu => (
           {
             dishid: menu.dishid,
             name: menu.name,
             price: menu.price,
-            non_veg: menu.non_veg,
+          }
+        )),
+      });
+      Starters_V({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Starters" && menu.Non_Veg==="No")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
+          }
+        )),
+      });
+      Main_Course_N({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Main Course" && menu.Non_Veg==="Yes")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
+          }
+        )),
+      });
+      Main_Course_V({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Main Course" && menu.Non_Veg==="No")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
+          }
+        )),
+      });
+      Desserts_N({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Desserts" && menu.Non_Veg==="Yes")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
+          }
+        )),
+      });
+      Desserts_V({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Desserts" && menu.Non_Veg==="No")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
+          }
+        )),
+      });
+      Beverages_N({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Beverages" && menu.Non_Veg==="Yes")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
+          }
+        )),
+      });
+      Beverages_V({
+        columns: [
+          {
+            label: 'Dish ID',
+            field: 'dishid',
+          },
+          {
+            label: 'Dish',
+            field: 'name',
+          },
+          {
+            label: 'Price',
+            field: 'price',
+          },
+          {
+            label: 'Non Veg',
+            field: 'non_veg',
+          },
+        ],
+        rows: jsonData.filter(menu => (menu.category === "Beverages" && menu.Non_Veg==="No")).map(menu => (
+          {
+            dishid: menu.dishid,
+            name: menu.name,
+            price: menu.price,
           }
         )),
       });

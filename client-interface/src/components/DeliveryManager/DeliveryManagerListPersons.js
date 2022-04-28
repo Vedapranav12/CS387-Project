@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const DeliveryManager = () => {
+const DeliveryManagerListPersons = async => {
   const [currentOrders, setcurrentOrders] = useState(null);
   useEffect(() => {
     const getOrders = async () => {
@@ -66,4 +66,4 @@ const DeliveryManager = () => {
   });
 };
 
-export default DeliveryManager;
+export default DeliveryManagerListPersons;
