@@ -304,6 +304,15 @@ app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
     }
 });
 
+app.get("/all_del_persons", async(req, res) => {
+    try {
+        const DeliveryPersonData = await pool.query(`select Name, Availability, OrderID from Delivery_Man, Order_info where Order_info.DeliveryID = Delivery_Man.Username;`);
+        res.json(DeliveryPersonData.rows());
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
 app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, res) => {
     var addr = req.params.addr;
     var usrnme = req.params.usrnme;
