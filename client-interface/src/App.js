@@ -9,6 +9,7 @@ import {
 import Home from './components/Home';
 import ListMenu from './components/ListMenu';
 import ListUserCart from './components/ListUserCart';
+import OnlineCheckout from './components/OnlineCheckout';
 import UpdateProfile from './components/UpdateProfile';
 import Register from './components/Register';
 import Login from './components/Login';
@@ -40,6 +41,7 @@ function App() {
               <Route path='/tbl_mngr' element={<TableManager/>}/>
               <Route path='/chef' element={<Chef/>}/>
               <Route path="/user_cart" element={<ListUserCart />} />
+              <Route path="/online_checkout" element={<OnlineCheckout />} />
               <Route path="/update_profile" element={<UpdateProfile />} />
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}

@@ -353,8 +353,8 @@ app.get("/get_user_details/:usrnme", async (req, res) => {
 });
 
 app.post("/editprofile/", async (req, res) => {
-  const {usrnme, name, address, contact, zip} = req.body;
-  pool.query("update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1", [usrnme, name, address, contact, zip], (err, results) => {
+  const {usrnme, Name, Address, Contact, Zip} = req.body;
+  pool.query("update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1", [usrnme, Name, Address, Contact, Zip], (err, results) => {
     if (err) {
         console.log(err)
         res.status(400).send({ message: 'Please try again later' });
@@ -455,6 +455,16 @@ app.get("/user_cart/:usrnme", async(req,res) => {
   } catch(err){
     console.error(err.message);
   }
+});
+
+app.get("/check_zip/:zip", async (req,res) => {
+  try{
+    var zip = req.params.zip;
+    const zips = await pool.query(`select primary_zip from Pincode where primary_zip = $1;`, [zip]);
+    res.json(zips.rows);
+    } catch(err){
+      console.error(err.message);
+    }
 });
 
 app.post("/sub_ingreds_cart/:usrnme", async (req, res) => {

@@ -77,6 +77,7 @@ const ListUserCart = () => {
             </div>
           </div>
           <Link to="/menu"> <button type="button"> Go back to Menu </button> </Link>
+          <Link to="/online_checkout"> <button type="button"> Checkout </button> </Link>
         </div>
         <br />
       </div>
