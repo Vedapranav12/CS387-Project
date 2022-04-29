@@ -15,15 +15,15 @@ const ListUserCart = () => {
 
   const getUserCart = async () => {
     try {
-      const usrnme=user.Username;
+      const usrnme = user.Username;
       const response = await fetch(`http://localhost:5000/user_cart/${usrnme}`);
       const jsonData = await response.json();
-      var total=0;
+      var total = 0;
       jsonData.forEach(dish => {
-        total += dish.price*dish.quantity;
+        total += dish.price * dish.quantity;
       });
       setgrandTotal(total);
-      set_cartDetails(jsonData);        
+      set_cartDetails(jsonData);
     } catch (err) {
       console.error(err.message);
     }
@@ -42,41 +42,42 @@ const ListUserCart = () => {
           <div className="row justify-content-center">
             <div className="col-sm-10">
               <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-              <div onClick={() => this.handleSubmit('value')}>
-              <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                  <thead>
-                    <tr>
-                      <th>Dish ID</th>
-                      <th>Dish</th>
-                      <th>Price</th>
-                      <th>Quantity</th>
-                      <th> Total price</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartDetails.map(data => (
-                      <tr key={data.dishid}>
-                        <td>{data.dishid}</td>
-                        <td>{data.name}</td>
-                        <td>{data.price}</td>
-                        <td>{data.quantity}</td>
-                        <td>{data.price*data.quantity}</td>
-                        {/* <td>
+                <div onClick={() => this.handleSubmit('value')}>
+                  <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                    <thead>
+                      <tr>
+                        <th>Dish ID</th>
+                        <th>Dish</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th> Total price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartDetails.map(data => (
+                        <tr key={data.dishid}>
+                          <td>{data.dishid}</td>
+                          <td>{data.name}</td>
+                          <td>{data.price}</td>
+                          <td>{data.quantity}</td>
+                          <td>{data.price * data.quantity}</td>
+                          {/* <td>
                           <Button onClick={handleAdd} value={data.dishid}> Add </Button>
                         </td>
                         <td>
                           <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
                         </td> */}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <h4>Grand Total: {grandTotal}</h4>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <h4>Grand Total: {grandTotal}</h4>
                 </div>
               </div>
             </div>
           </div>
           <Link to="/menu"> <button type="button"> Go back to Menu </button> </Link>
+          <Link to="/online_checkout"> <button type="button"> Checkout </button> </Link>
         </div>
         <br />
       </div>
