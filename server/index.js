@@ -568,23 +568,46 @@ app.post("/offl_ords_update", async (req, res) => {
     });
 });
 
-app.post("/add_items", async (req, res) => {
-    const { quantity, itemid, today } = req.body;
-    pool.query(`update Inventory set Quantity = Quantity+$1 where ItemID=$2;`, [quantity, itemid], (err, results) => {
+app.get("/inventory", async (req,res) => {
+  try{
+  const Inventory = await pool.query("select * from Inventory order by ItemID ASC;");
+  res.json(Inventory.rows);
+  // console.log()
+  } catch(err){
+    console.error(err);
+  }
+});
+
+app.get("/check_Itemid/:ItemID", async (req,res) => {
+  try{
+    const ItemID=req.params.ItemID;
+    const Inventory = await pool.query("select * from Inventory where ItemID=$1;", [ItemID]);
+    res.json(Inventory.rows);
+  // console.log()
+  } catch(err){
+    console.error(err);
+    return;
+  }
+});
+
+app.post("/add_items", async(req, res) => {
+    const { ItemID, Quantity, date } = req.body;
+    pool.query(`update Inventory set Quantity = Quantity+$1 where ItemID=$2;`, [Quantity, ItemID], (err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
             res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
-        }
+            return;
+        } 
     });
     pool.query(`insert into Add_items as ai values($1, $2, $3) ON conflict
-  ($1, $2) do update set Quantity = ai.Quantity+$3;`, [itemid, today, quantity], (err, results) => {
+  (ItemID, Today) do update set Quantity = ai.Quantity+$3;`, [ItemID, date, Quantity], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
+            return;
         } else {
             res.status(200).json(results.rows);
+            return;
         }
     });
 });
