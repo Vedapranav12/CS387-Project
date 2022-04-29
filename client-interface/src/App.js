@@ -25,6 +25,7 @@ import TableManager from './components/TableManager/TableManager';
 import Chef from './components/Chef/Chef';
 import ListInventory from './components/Chef/ListInventory';
 import InventoryForm from './components/Chef/InventoryForm';
+import ViewOrder from './components/TableManager/ViewOrder';
 function App() {
   return (
     <div>
@@ -40,15 +41,16 @@ function App() {
               <Route path="/deli_manager" element={<DeliveryManager />} />
               <Route path="/deli_manager/order_info/:orderid/:pincode" element={<DeliveryManagerListPersons />} />
               <Route path="/deli_manager/all_persons" element={<DeliveryManagerAllPersons />} />
-              <Route path='/deli_agent/' element={<DeliveryAgent/>}/>
-              <Route path='/tbl_mngr' element={<TableManager/>}/>
-              <Route path='/chef' element={<Chef/>}/>
+              <Route path='/deli_agent/' element={<DeliveryAgent />} />
+              <Route path='/tbl_mngr' element={<TableManager />} />
+              <Route path='/chef' element={<Chef />} />
               <Route path="/user_cart" element={<ListUserCart />} />
               <Route path="/online_checkout" element={<OnlineCheckout />} />
               <Route path="/user_history" element={<ListUserOrders />} />
               <Route path="/update_profile" element={<UpdateProfile />} />
               <Route path="/list_inventory" element={<ListInventory />} />
               <Route path="/inventory_form" element={<InventoryForm />} />
+              <Route path='/vieworder/:tblid' element={<ViewOrder/>}/>
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}
             </Routes>

@@ -69,7 +69,8 @@ const Header = () => {
 
           <Typography variant="h6"
             component="div" sx={{ flexGrow: 1 }}>
-            Restaurant Management System
+            <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> Restaurant Management System </Link>
+
           </Typography>
           <Card color="inherit" sx={{ mx: 10 }} style={{ variant: "contained", border: "10px", boxShadow: "none", padding: "10px", borderRadius: 3 }}>
             <Typography>
@@ -83,13 +84,13 @@ const Header = () => {
           )}
         </Toolbar>
       </AppBar>
-      {
+      {/* {
         globalContext.fetchingUser ? (
           <h1 className="loader">Loading...</h1>
         ) : (
           ''
         )
-      }
+      } */}
     </div >
   )
 }

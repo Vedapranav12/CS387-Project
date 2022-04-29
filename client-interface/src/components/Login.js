@@ -27,7 +27,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     Username: '',
     Passcode: '',
@@ -49,7 +49,11 @@ const Login = () => {
           console.log("response data user", response);
           console.log(response);
           globalContext.setUser(response.data.user);
-          navigate('/dashboard');
+          setError(null);
+          if (response.data.user.identifyRole === 'Customer') {
+            navigate('/');
+          }
+          navigate('/');
         } else {
           throw new Error();
         }
@@ -136,6 +140,7 @@ const Login = () => {
               >
                 Sign In
               </Button>
+              {error !== null ? <a style={{ color: 'red' }}>{error}</a> : ''}
               <Grid container margin="normal" >
                 <Grid item xs>
                   <Link to="/register">

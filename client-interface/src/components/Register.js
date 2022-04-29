@@ -24,7 +24,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     Address: '',
     Username: '',
@@ -48,6 +48,7 @@ const Register = () => {
         if (response.status === 200) {
           console.log(response.data.user);
           globalContext.setUser(response.data.user);
+          setError(null);
           navigate('/dashboard');
         } else {
           throw new Error();
@@ -123,6 +124,7 @@ const Register = () => {
                 name="Contact"
                 label="Contact"
                 type="text"
+                inputProps={{ maxLength: 10 }}
                 id="Contact"
                 value={formData.Contact}
                 onChange={(e) => setFormData({ ...formData, Contact: e.target.value })}
@@ -145,6 +147,7 @@ const Register = () => {
                 name="Zip"
                 label="Zip"
                 type="text"
+                inputProps={{ maxLength: 6 }}
                 id="Zip"
                 value={formData.Zip}
                 onChange={(e) => setFormData({ ...formData, Zip: e.target.value })}
@@ -158,6 +161,7 @@ const Register = () => {
               >
                 Submit
               </Button>
+              {error !== null ? <a style={{ color: 'red' }}>{error}</a> : ''}
             </Box>
           </Box>
         </Container>

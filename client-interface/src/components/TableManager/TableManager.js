@@ -1,41 +1,77 @@
-import React, { Fragment, useEffect, useState } from "react";
-
-import { MDBDataTableV5 } from 'mdbreact';
+import React, { Fragment, useEffect, useState, useContext } from "react";
+import { Button } from "react-bootstrap";
+import GlobalContext from '../../providers/GlobalContext';
+import { useNavigate } from 'react-router-dom';
 
 const TableManager = () => {
-  const [TableList, setTableList] = useState(null);
+  const axios = require('axios');
+  const globalContext = useContext(GlobalContext);
+  const navigate = useNavigate();
+  const [error, setError] = useState();
+  const [TableList, setTableList] = useState([]);
+  const getList = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/get_tables");
+      const jsonData = await response.json();
+      console.log(jsonData);
+      setTableList(jsonData);
+    }
+    catch (err) {
+      console.log(err.message);
+    }
+  };
   useEffect(() => {
-    const getList = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/get_tables");
-        const jsonData = await response.json();
-        console.log(jsonData);
-        setTableList({
-          columns: [
-            {
-              label: 'TableID',
-              field: 'TableID'
-            },
-            {
-              label: 'Status',
-              field: 'Status'
-            }
-          ],
-          rows: jsonData.map(tabl_list => (
-            {
-              TableID: tabl_list.tableid,
-              Status: tabl_list.status
-            }
-          )),
-        });
-
-      }
-      catch (err) {
-        console.log(err.message);
-      }
-    };
-    getList();    
+    getList();
   }, []);
+  const handleFree = async (e) => {
+    let tableId = parseInt(e.target.value);
+    console.log(tableId);
+    axios
+      .post(`http://localhost:5000/checkout_offl`, { tableId: tableId }, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getList();
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  };
+  const handleOccupy = async (e) => {
+    let tableId = parseInt(e.target.value);
+    console.log(tableId);
+    axios
+      .post(`http://localhost:5000/assign_tbl`, { tableId: tableId }, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getList();
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  };
+
+  const ViewOrder = async (e) => {
+    let tableId = parseInt(e.target.value);
+    let path = `/vieworder/${tableId}`;
+    navigate(path);
+  };
+
   return (
     <Fragment >
       <div className="demo">
@@ -46,9 +82,31 @@ const TableManager = () => {
             <div className="col-sm-10">
               <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
                 <div className="table p-3 text-left table-condensed table-sm table-striped ChangeTextFont">
-                  {TableList ? <MDBDataTableV5 hover entriesOptions={[5, 10, 25]} entries={10} searching={false} pagesAmount={4} borderless data={TableList} />
-                    : ''
-                  }
+                  <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                    <thead>
+                      <tr>
+                        <th>Table Number</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {TableList.map(data => (
+                        <tr key={data.tableid}>
+                          <td>{data.tableid}</td>
+                          <td>{data.status}</td>
+                          <td>
+                            <Button disabled={data.status=='Free'} onClick={handleFree} value={data.tableid}> Free Table </Button>
+                          </td>
+                          <td>
+                            <Button disabled={data.status=='Not free'} onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
+                          </td>
+                          <td>
+                            <Button disabled={data.status=='Free'} onClick={ViewOrder} value={data.tableid}> View Order </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
