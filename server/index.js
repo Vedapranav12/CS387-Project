@@ -415,13 +415,11 @@ app.post("/sub_ingreds_tbl_cart/:tblid", async(req, res) => {
     });
 });
 
-app.post("/insert_cart/:usrnme/:dishid/:quantity", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var dishid = req.params.dishid;
-    var quantity = req.params.quantity;
+app.post("/insert_cart", async (req, res) => {
+  const { usrnme, dishid, quantity } = req.body;
     pool.query(`insert into Cart as tc values($1, $2,
-    $3,0,0) ON conflict ($1,$2) do update set CartQuantity =
-    tc.CartQuantity+quantity;`, [usrnme, dishid, quantity], (err, results) => {
+    $3) ON conflict (CustomerID,DIshID) do update set quantity =
+    tc.quantity+$3;`, [usrnme, dishid, quantity], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -431,7 +429,31 @@ app.post("/insert_cart/:usrnme/:dishid/:quantity", async(req, res) => {
     });
 });
 
-app.post("/sub_ingreds_cart/:usrnme", async(req, res) => {
+app.post("/remove_cart", async (req, res) => {
+  const { usrnme, dishid, quantity } = req.body;
+    pool.query(`update Cart set Quantity =
+    Quantity-$3 where CustomerID=$1 and DIshID=$2 and Quantity>=$3;`, [usrnme, dishid, quantity], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.get("/user_cart/:usrnme", async(req,res) => {
+  try{
+  var usrnme = req.params.usrnme;
+  const cart_items = await pool.query(`select c.DishID, d.Name, d.Price, c.Quantity from 
+  cart as c inner join Dish as d on c.DIshID=d.DIshID where c.CustomerID=$1 and c.quantity>0;`, [usrnme]);
+  res.json(cart_items.rows);
+  } catch(err){
+    console.error(err.message);
+  }
+});
+
+app.post("/sub_ingreds_cart/:usrnme", async (req, res) => {
     var usrnme = req.params.usrnme;
     pool.query(`with consumed as (select ing.ItemID,
     sum(tc.Quantity*ing.Quantity) as quantity from Cart as tc inner join
