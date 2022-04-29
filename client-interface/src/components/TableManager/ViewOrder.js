@@ -3,6 +3,7 @@ import { Button } from "react-bootstrap";
 import GlobalContext from '../../providers/GlobalContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { MDBDataTableV5 } from 'mdbreact';
+import { Link } from 'react-router-dom';
 
 const ViewOrder = () => {
     const navigate = useNavigate();
@@ -43,6 +44,12 @@ const ViewOrder = () => {
     return (
         <Fragment >
       <div className="demo">
+        <br/>
+        <div>
+            <li>
+                <Link to="/tbl_mngr">Table List</Link>
+            </li>
+        </div>
         <br />
         <div className="container text-center">
           <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Order List</h2>

@@ -743,22 +743,36 @@ app.post("/assign_delperson", async (req, res) => {
 });
 
 app.post("/delivered", async (req, res) => {
-    const { delid, ordid } = req.body;
+    const { delivd, ordid } = req.body;
+    console.log(req.body);
     pool.query(`update Order_info set DeliveryID=NULL, Status='Delivered'
     where OrderID=$1;`, [ordid], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
         } else {
-            res.status(200).json(results.rows);
-        }
-    });
-    pool.query(`update Delivery_Man set Available='Yes' where DeliveryID=$1;`, [delid], (err, results) => {
-        if (err) {
-            console.log(err)
-            res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
+            // const numorders = await pool.query(`select count(*) from Order_info where Order_info.DeliveryID = $1`,[delid]);
+            // if (numorders.rowCount == 0) {
+            //     pool.query(`update Delivery_Man set Available='Yes' where DeliveryID=$1;`, [delid], (err, results) => {
+            //         if (err) {
+            //             console.log(err)
+            //             res.status(400).send({ message: 'Please try again later' });
+            //         } else {
+            //             res.status(200).json(results.rows);
+            //         }
+            //     });
+            // }
+            // else {
+            //     res.status(200).json(results.rows);
+            // }
+            pool.query(`update Delivery_Man set Available='Yes' where Username=$1;`, [delivd], (err, results) => {
+                if (err) {
+                    console.log(err)
+                    res.status(400).send({ message: 'Please try again later' });
+                } else {
+                    res.status(200).json(results.rows);
+                }
+            });
         }
     });
 });
