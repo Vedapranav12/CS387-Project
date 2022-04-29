@@ -1,36 +1,35 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 import { MDBDataTableV5 } from 'mdbreact';
 
-const DeliveryManager = () => {
-  const [currentOrders, setcurrentOrders] = useState(null);
+const Chef = () => {
+  const [OrderList, setOrderList] = useState(null);
   useEffect(() => {
-    const getOrders = async () => {
+    const getList = async () => {
       try {
-        const response = await fetch("http://localhost:5000/onl_cook_ords");
+        const response = await fetch("http://localhost:5000/pend_ords");
         const jsonData = await response.json();
         console.log(jsonData);
-        setcurrentOrders({
+        setOrderList({
           columns: [
             {
               label: 'OrderID',
               field: 'OrderID'
             },
             {
-              label: 'Zip',
-              field: 'Zip'
+              label: 'DishID',
+              field: 'DishID'
             },
             {
-              label: 'Time',
-              field: 'Time'
+                label: 'Quantity',
+                field: 'Quantity'
             }
           ],
-          rows: jsonData.map(curr_orders => (
+          rows: jsonData.map(ord_list => (
             {
-              OrderID: <Link to={`/deli_manager/order_info/${curr_orders.orderid}`}>{curr_orders.orderid}</Link>,
-              Zip: curr_orders.zip,
-              Time: curr_orders.time,
+              OrderID: ord_list.orderid,
+              DishID: ord_list.dishid,
+              Quantity: ord_list.quantity,
             }
           )),
         });
@@ -40,27 +39,19 @@ const DeliveryManager = () => {
         console.log(err.message);
       }
     };
-    getOrders();    
+    getList();    
   }, []);
   return (
     <Fragment >
       <div className="demo">
         <br />
-        <div>
-            <li>
-                <Link to="/deli_manager">Order List</Link>
-            </li>
-            <li>
-                <Link to="/deli_manager/all_persons">Manage Delivery persons</Link>
-            </li>
-        </div>
         <div className="container text-center">
           <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Order List</h2>
           <div className="row justify-content-center">
             <div className="col-sm-10">
               <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
                 <div className="table p-3 text-left table-condensed table-sm table-striped ChangeTextFont">
-                  {currentOrders ? <MDBDataTableV5 hover entriesOptions={[5, 10, 25]} entries={10} searching={false} pagesAmount={4} borderless data={currentOrders} />
+                  {OrderList ? <MDBDataTableV5 hover entriesOptions={[5, 10, 25]} entries={10} searching={false} pagesAmount={4} borderless data={OrderList} />
                     : ''
                   }
                 </div>
@@ -74,4 +65,4 @@ const DeliveryManager = () => {
   )
 };
 
-export default DeliveryManager;
+export default Chef;

@@ -2,15 +2,12 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MDBDataTableV5 } from 'mdbreact';
 
-const DeliveryManagerListPersons = () => {
-  const navigate = useNavigate();
-  const params = useParams();
-  const pincode = params.pincode;
+const DeliveryManagerAllPersons = () => {
   const [listPersons, setlistPersons] = useState(null);
   useEffect(() => {
-    const getDeliveryPersons = async pincode => {
+    const getDeliveryPersons = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/del_ppl/${pincode}`);
+        const response = await fetch(`http://localhost:5000/all_del_persons`);
         const jsonData = await response.json();
         console.log(jsonData);
         setlistPersons({
@@ -20,24 +17,31 @@ const DeliveryManagerListPersons = () => {
               field: 'Name'
             },
             {
-              label: 'Contact',
-              field: 'Contact'
+              label: 'Availability',
+              field: 'Available'
+            },
+            {
+                label: 'OrderID',
+                field: 'OrderID'
             }
           ],
           rows: jsonData.map(list_persons => (
             {
               Name:list_persons.name,
-              Contact: list_persons.contact,
+              Available: list_persons.available,
+              OrderID: list_persons.orderid,
             }
           )),
         });
+        console.log(listPersons);
 
       }
       catch (err) {
         console.log(err.message);
       }
+
     };
-    getDeliveryPersons(pincode);  
+    getDeliveryPersons();  
   }, []);
   return (
     <Fragment >
@@ -52,7 +56,7 @@ const DeliveryManagerListPersons = () => {
             </li>
         </div>
         <div className="container text-center">
-          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Delivery persons for current order</h2>
+          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > All delivery persons</h2>
           <div className="row justify-content-center">
             <div className="col-sm-10">
               <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
@@ -71,4 +75,4 @@ const DeliveryManagerListPersons = () => {
   )
 };
 
-export default DeliveryManagerListPersons;
+export default DeliveryManagerAllPersons;

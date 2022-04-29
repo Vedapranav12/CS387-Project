@@ -18,11 +18,12 @@ drop table if exists Dish;
 drop table if exists Cust_Coups;
 drop table if exists Customer;
 drop table if exists Delivery_Man;
+drop table if exists "session";
 /* drop table if exists Pincode; */
 drop trigger if exists delete_coupon_trigger on Coupon;
 drop function if exists delete_coupon;
 drop table if exists Coupon;
-drop extension pgcrypto;
+drop extension if exists pgcrypto;
 
 /* --Pincode information
 CREATE TABLE Pincode (
@@ -268,5 +269,16 @@ ALTER TABLE Dish ALTER DishID SET DEFAULT NEXTVAL('dish_id');
 ALTER TABLE Inventory ALTER ItemID SET DEFAULT NEXTVAL('item_id');
 ALTER TABLE Table_info ALTER TableID SET DEFAULT NEXTVAL('table_id');
 
+
+CREATE TABLE "session" (
+  "sid" varchar NOT NULL COLLATE "default",
+	"sess" json NOT NULL,
+	"expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 
