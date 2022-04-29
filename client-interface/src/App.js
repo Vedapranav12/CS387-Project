@@ -36,7 +36,7 @@ function App() {
               <Route path="/menu" element={<ListMenu />} />
               <Route path="/register" element={<Register />} />
               <Route path="/deli_manager" element={<DeliveryManager />} />
-              <Route path="/deli_manager/order_info/:pincode" element={<DeliveryManagerListPersons />} />
+              <Route path="/deli_manager/order_info/:orderid/:pincode" element={<DeliveryManagerListPersons />} />
               <Route path="/deli_manager/all_persons" element={<DeliveryManagerAllPersons />} />
               <Route path='/deli_agent/' element={<DeliveryAgent/>}/>
               <Route path='/tbl_mngr' element={<TableManager/>}/>

@@ -209,12 +209,20 @@ app.get("/get_tables", async(req, res) => {
     }
 })
 
-app.get("/pend_ords", async(req, res) => {
+app.get("/pend_ords_onl", async(req, res) => {
     try {
         const PendingOrds = await pool.query(`select O1.OrderID,DishID, Quantity from Order_items
     as O1 inner join Order_info as O2 on O1.OrderID=O2.OrderID where
-    Status='Received' order by OrderID asc,DishID asc;
-    select TableID, DishID, OrderQuantity from Table_cart where OrderQuantity>0
+    Status='Received' order by OrderID asc,DishID asc;`);
+        res.json(PendingOrds.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.get("/pend_ords_offl", async(req, res) => {
+    try {
+        const PendingOrds = await pool.query(`select TableID, DishID, OrderQuantity from Table_cart where OrderQuantity>0
     order by TableID asc, DishID asc;`);
         res.json(PendingOrds.rows);
     } catch (err) {
@@ -709,16 +717,16 @@ app.post("/assign_delperson", async(req, res) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
         }
-    });
-    pool.query(`update Delivery_Man set Available='No' where DeliveryID=$1;`, [delid], (err, results) => {
-        if (err) {
-            console.log(err)
-            res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
+        else {
+            pool.query(`update Delivery_Man set Available='No' where DeliveryID=$1;`, [delid], (err, results) => {
+                if (err) {
+                    console.log(err)
+                    res.status(400).send({ message: 'Please try again later' });
+                } else {
+                    res.status(200).json(results.rows);
+                }
+            });
         }
     });
 });
