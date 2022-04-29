@@ -9,54 +9,53 @@ const TableManager = () => {
   const navigate = useNavigate();
   const [error, setError] = useState();
   const [TableList, setTableList] = useState([]);
+  const getList = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/get_tables");
+      const jsonData = await response.json();
+      console.log(jsonData);
+      setTableList(jsonData);
+    }
+    catch (err) {
+      console.log(err.message);
+    }
+  };
   useEffect(() => {
-    const getList = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/get_tables");
-        const jsonData = await response.json();
-        console.log(jsonData);
-        setTableList(jsonData);
-      }
-      catch (err) {
-        console.log(err.message);
-      }
-    };
-
-  getList();    
+    getList();
   }, []);
   const handleFree = async (e) => {
-    let tableId=parseInt(e.target.value);
+    let tableId = parseInt(e.target.value);
     console.log(tableId);
-    
-  axios
-    .post(`http://localhost:5000/checkout_offl`, {tableId : tableId}, {
-      withCredentials: true,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-    })
-    .then((response) => {
-      if (response.status === 200) {
-      } else {
-        throw new Error();
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-    })
+    axios
+      .post(`http://localhost:5000/checkout_offl`, { tableId: tableId }, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getList();
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   };
   const handleOccupy = async (e) => {
-    let tableId=parseInt(e.target.value);
+    let tableId = parseInt(e.target.value);
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tableId })
     };
 
-    try{
-    const response = await fetch("http://localhost:5000/assign_tbl/", requestOptions);
-    console.log(response);
-    } catch(err){
+    try {
+      const response = await fetch("http://localhost:5000/assign_tbl/", requestOptions);
+      console.log(response);
+    } catch (err) {
       console.error(err.message);
     }
   };
@@ -71,30 +70,30 @@ const TableManager = () => {
               <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
                 <div className="table p-3 text-left table-condensed table-sm table-striped ChangeTextFont">
                   <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                  <thead>
-                    <tr>
-                      <th>Table Number</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {TableList.map(data => (
-                      <tr key={data.tableid}>
-                        <td>{data.tableid}</td>
-                        <td>{data.status}</td>
-                        <td>
-                          <Button onClick={handleFree} value={data.tableid}> Free Table </Button>
-                        </td>
-                        <td>
-                          <Button onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
-                        </td>
-                        <td>
-                          <Button onClick={handleFree} value={data.tableid}> View Order </Button>
-                        </td>
+                    <thead>
+                      <tr>
+                        <th>Table Number</th>
+                        <th>Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {TableList.map(data => (
+                        <tr key={data.tableid}>
+                          <td>{data.tableid}</td>
+                          <td>{data.status}</td>
+                          <td>
+                            <Button onClick={handleFree} value={data.tableid}> Free Table </Button>
+                          </td>
+                          <td>
+                            <Button onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
+                          </td>
+                          <td>
+                            <Button onClick={handleFree} value={data.tableid}> View Order </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
