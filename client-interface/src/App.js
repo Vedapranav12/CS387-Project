@@ -23,6 +23,8 @@ import DeliveryManagerAllPersons from './components/DeliveryManager/DeliveryMana
 import DeliveryAgent from './components/DeliveryAgent/deliveryAgent';
 import TableManager from './components/TableManager/TableManager';
 import Chef from './components/Chef/Chef';
+import ListInventory from './components/Chef/ListInventory';
+import InventoryForm from './components/Chef/InventoryForm';
 function App() {
   return (
     <div>
@@ -45,6 +47,8 @@ function App() {
               <Route path="/online_checkout" element={<OnlineCheckout />} />
               <Route path="/user_history" element={<ListUserOrders />} />
               <Route path="/update_profile" element={<UpdateProfile />} />
+              <Route path="/list_inventory" element={<ListInventory />} />
+              <Route path="/inventory_form" element={<InventoryForm />} />
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}
             </Routes>
