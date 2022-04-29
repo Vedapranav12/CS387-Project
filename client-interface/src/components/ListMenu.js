@@ -18,6 +18,12 @@ const ListMenu = () => {
   const [Desserts_V, set_Desserts_V] = useState([]);
   const [Beverages_N, set_Beverages_N] = useState([]);
   const [Beverages_V, set_Beverages_V] = useState([]);
+  const [Sfilter, set_Sfilter] = useState(true);
+  const [Mfilter, set_Mfilter] = useState(true);
+  const [Dfilter, set_Dfilter] = useState(true);
+  const [Bfilter, set_Bfilter] = useState(true);
+  const [Nfilter, set_Nfilter] = useState(true);
+  const [Vfilter, set_Vfilter] = useState(true);
   const getMenu = async () => {
     try {
       const response = await fetch("http://localhost:5000/view_menu");
@@ -34,6 +40,30 @@ const ListMenu = () => {
       console.error(err.message);
     }
   };
+
+  const handle_Sfilter = () => {
+    set_Sfilter(!Sfilter);
+  }
+
+  const handle_Mfilter = () => {
+    set_Mfilter(!Mfilter);
+  }
+
+  const handle_Dfilter = () => {
+    set_Dfilter(!Dfilter);
+  }
+
+  const handle_Bfilter = () => {
+    set_Bfilter(!Bfilter);
+  }
+
+  const handle_Nfilter = () => {
+    set_Nfilter(!Nfilter);
+  }
+
+  const handle_Vfilter = () => {
+    set_Vfilter(!Vfilter);
+  }
 
   const handleAdd = async (e) => {
     let usrnme = user.Username; //need to change
@@ -87,222 +117,328 @@ const ListMenu = () => {
                   <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Menu</h2>
                   <div className="row justify-content-center">
                     <div className="col-sm-10">
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Starters(Non_Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Starters_N.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                      <div className="App">
+                        Filter Menu:
+                        <div className="filter">
+                          <input
+                            type="checkbox"
+                            id="Nfilter"
+                            name="Nfilter"
+                            value="Nfilter"
+                            checked={Nfilter}
+                            onChange={handle_Nfilter}
+                          />
+                          Non-Veg
+                        </div>
+                        <div className="filter">
+                          <input
+                            type="checkbox"
+                            id="Vfilter"
+                            name="Vfilter"
+                            value="Vfilter"
+                            checked={Vfilter}
+                            onChange={handle_Vfilter}
+                          />
+                          Veg
+                        </div>
+                        <div className="filter">
+                          <input
+                            type="checkbox"
+                            id="Sfilter"
+                            name="Sfilter"
+                            value="Sfilter"
+                            checked={Sfilter}
+                            onChange={handle_Sfilter}
+                          />
+                          Starters
+                        </div>
+                        <div className="filter">
+                          <input
+                            type="checkbox"
+                            id="Mfilter"
+                            name="Mfilter"
+                            value="Mfilter"
+                            checked={Mfilter}
+                            onChange={handle_Mfilter}
+                          />
+                          Main Course
+                        </div>
+                        <div className="filter">
+                          <input
+                            type="checkbox"
+                            id="Dfilter"
+                            name="Dfilter"
+                            value="Dfilter"
+                            checked={Dfilter}
+                            onChange={handle_Dfilter}
+                          />
+                          Desserts
+                        </div>
+                        <div className="filter">
+                          <input
+                            type="checkbox"
+                            id="Bfilter"
+                            name="Bfilter"
+                            value="Bfilter"
+                            checked={Bfilter}
+                            onChange={handle_Bfilter}
+                          />
+                          Beverages
+                        </div>
                       </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Starters(Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Starters_V.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Main Course(Non-Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Main_Course_N.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Main Course(Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Main_Course_V.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Desserts(Non-Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Desserts_N.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Desserts(Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Desserts_V.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Beverages(Non-Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Beverages_N.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                      <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Beverages(Veg)</h2>
-                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                          <thead>
-                            <tr>
-                              <th>Dish ID</th>
-                              <th>Dish</th>
-                              <th>Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {Beverages_V.map(data => (
-                              <tr key={data.dishid}>
-                                <td>{data.dishid}</td>
-                                <td>{data.name}</td>
-                                <td>{data.price}</td>
-                                <td>
-                                  <Button onClick={handleAdd} value={data.dishid}> Add </Button>
-                                </td>
-                                <td>
-                                  <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                      {Sfilter && Nfilter ?
+                        <div>
+                          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Starters(Non_Veg)</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Starters_N.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {Sfilter && Vfilter ?
+                        <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Starters(Veg)</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Starters_V.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {Mfilter && Nfilter ?
+                        <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Main Course(Non-Veg)</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Main_Course_N.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {Mfilter && Vfilter ?
+                        <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Main Course(Veg)</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Main_Course_V.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {Dfilter && Nfilter ?
+                        <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Desserts(Non-Veg)</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Desserts_N.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {Dfilter && Vfilter ?
+                        <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Desserts(Veg)</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Desserts_V.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {Bfilter ?
+                        <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Beverages</h2>
+                          <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                            <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                              <thead>
+                                <tr>
+                                  <th>Dish ID</th>
+                                  <th>Dish</th>
+                                  <th>Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {Beverages_N.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                                {Beverages_V.map(data => (
+                                  <tr key={data.dishid}>
+                                    <td>{data.dishid}</td>
+                                    <td>{data.name}</td>
+                                    <td>{data.price}</td>
+                                    <td>
+                                      <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                                    </td>
+                                    <td>
+                                      <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div> : ''}
+
+                      {/* { Bfilter && Vfilter ?
+            <div> <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Beverages(Veg)</h2>
+            <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+              <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                  <thead>
+                    <tr>
+                      <th>Dish ID</th>
+                      <th>Dish</th>
+                      <th>Price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Beverages_V.map(data => (
+                      <tr key={data.dishid}>
+                        <td>{data.dishid}</td>
+                        <td>{data.name}</td>
+                        <td>{data.price}</td>
+                        <td>
+                          <Button onClick={handleAdd} value={data.dishid}> Add </Button>
+                        </td>
+                        <td>
+                          <Button onClick={handleSubtract} value={data.dishid}> Remove </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              </div> :''} */}
                     </div>
                   </div>
                   <Link to="/user_cart"> <button type="button"> GO to Cart </button> </Link>

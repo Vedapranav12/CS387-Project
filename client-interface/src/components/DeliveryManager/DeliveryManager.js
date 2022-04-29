@@ -28,7 +28,7 @@ const DeliveryManager = () => {
           ],
           rows: jsonData.map(curr_orders => (
             {
-              OrderID: <Link to={`/deli_manager/order_info/${curr_orders.orderid}`}>{curr_orders.orderid}</Link>,
+              OrderID: <Link to={`/deli_manager/order_info/${curr_orders.orderid}/${curr_orders.zip}`}>{curr_orders.orderid}</Link>,
               Zip: curr_orders.zip,
               Time: curr_orders.time,
             }
