@@ -235,7 +235,7 @@ app.get("/view_menu", async(req, res) => {
 app.get("/ord_history/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
-        const History = await pool.query(`select OrderID, Status, Time from Order_info where CustomerID=$1;`, [id]);
+        const History = await pool.query(`select OrderID, Status, Time, Name from Order_info as O left outer join Delivery_Man as D on O.DeliveryID=D.Username where CustomerID=$1;`, [id]);
         res.json(History.rows);
     } catch (err) {
         console.error(err.message);
