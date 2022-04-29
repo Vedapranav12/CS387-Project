@@ -158,9 +158,9 @@ app.post('/fetch-user', async (req, res) => {
 //     console.log(playerBasicInfo);
 // })
 
-app.post("/assign_tbl/:tbl_id", async(req, res) => {
-    var id = req.params.tbl_id;
-    pool.query("update table_info set Status = 'Not Free' where TableID = $1", [id], (err, results) => {
+app.post("/assign_tbl", async(req, res) => {
+    const { tbl_id } = req.body;
+    pool.query("update table_info set Status = 'Not Free' where TableID = $1", [tbl_id], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Table not exist' });
@@ -323,13 +323,8 @@ app.get("/order_for_delivery/:delid", async(req, res) => {
     }
 });
 
-app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, res) => {
-    var addr = req.params.addr;
-    var usrnme = req.params.usrnme;
-    var nme = req.params.nme;
-    var contact = req.params.contact;
-    var pass = req.params.pass;
-    var zip = req.params.zip;
+app.post("/signup", async(req, res) => {
+    const { addr, usrnme, nme, contact, pass, zip } = req.body;
     pool.query(`insert into Customer values(Address,Username,Name,Contact,
       crypt(Passcode,gen_salt('bf')),Zip);`, [addr, usrnme, nme, contact, pass, zip], (err, results) => {
         if (err) {
@@ -364,7 +359,7 @@ app.post("/editprofile/", async (req, res) => {
 });
 });
 
-// app.post("/editprofile/:tbl/:addr/:usrnme/:nme/:contact/:pass/:zip", async (req, res) => {
+// app.post("/editprofile", async (req, res) => {
 //     var addr = req.params.addr;
 //     var usrnme = req.params.usrnme;
 //     var nme = req.params.nme;
@@ -387,10 +382,8 @@ app.post("/editprofile/", async (req, res) => {
 //     });
 // });
 
-app.post("/insert_table_cart/:tblid/:dishid/:quantity", async (req, res) => {
-    var tblid = req.params.tblid;
-    var dishid = req.params.dishid;
-    var quantity = req.params.quantity;
+app.post("/insert_table_cart", async (req, res) => {
+    const { tblid, dishid, quantity } = req.body;
     pool.query(`insert into Table_cart as tc values($1, $2,
     $3,0,0) ON conflict ($1,$2) do update set CartQuantity =
     tc.CartQuantity+$3;`, [tblid, dishid, quantity], (err, results) => {
@@ -403,8 +396,8 @@ app.post("/insert_table_cart/:tblid/:dishid/:quantity", async (req, res) => {
     });
 });
 
-app.post("/sub_ingreds_tbl_cart/:tblid", async(req, res) => {
-    var tblid = req.params.tblid;
+app.post("/sub_ingreds_tbl_cart", async(req, res) => {
+    const { tblid } = req.body;
     pool.query(`with consumed as (select ing.ItemID,
     sum(CartQuantity*ing.Quantity) as quantity from Table_cart as tc inner
     join Ingredients as ing on tc.DishID=ing.DishID where CartQuantity>0 and
@@ -467,8 +460,8 @@ app.get("/check_zip/:zip", async (req,res) => {
     }
 });
 
-app.post("/sub_ingreds_cart/:usrnme", async (req, res) => {
-    var usrnme = req.params.usrnme;
+app.post("/sub_ingreds_cart", async (req, res) => {
+    const { usrnme } = req.body;
     pool.query(`with consumed as (select ing.ItemID,
     sum(tc.Quantity*ing.Quantity) as quantity from Cart as tc inner join
     Ingredients as ing on tc.DishID=ing.DishID where tc.Quantity>0 and
@@ -484,9 +477,9 @@ app.post("/sub_ingreds_cart/:usrnme", async (req, res) => {
     });
 });
 
-app.post("/checkout_offl/:tblid", async(req, res) => {
-    var tblid = req.params.tblid;
-    pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [id], (err, results) => {
+app.post("/checkout_offl", async(req, res) => {
+    const { tblid } = req.body;
+    pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tblid], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -494,7 +487,7 @@ app.post("/checkout_offl/:tblid", async(req, res) => {
             res.status(200).json(results.rows);
         }
     });
-    pool.query(`delete from Table_cart where TableID=$1;`, [id], (err, results) => {
+    pool.query(`delete from Table_cart where TableID=$1;`, [tblid], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -504,10 +497,8 @@ app.post("/checkout_offl/:tblid", async(req, res) => {
     });
 });
 
-app.post("/set_addr/:usrnme/:addr/:zip", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var addr = req.params.addr;
-    var zip = req.params.zip;
+app.post("/set_addr", async(req, res) => {
+    const { usrnme,addr,zip } = req.body;
     pool.query(`update Customer set Address = $1, Zip = $2
   where Username = $3;`, [addr, zip, usrnme], (err, results) => {
         if (err) {
@@ -519,9 +510,8 @@ app.post("/set_addr/:usrnme/:addr/:zip", async(req, res) => {
     });
 });
 
-app.post("/ins_ord/:usrnme/:timestamp", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var timestamp = req.params.timestamp;
+app.post("/ins_ord", async(req, res) => {
+    const { usrnme,timestamp } = req.body;
     pool.query(`insert into Order_info values(NULL, $1,'Received',
     $2);`, [usrnme, timestamp], (err, results) => {
         if (err) {
@@ -533,8 +523,8 @@ app.post("/ins_ord/:usrnme/:timestamp", async(req, res) => {
     });
 });
 
-app.post("/onl_ords_update/:ordid", async(req, res) => {
-    var ord = req.params.ordid;
+app.post("/onl_ords_update", async(req, res) => {
+    const { ord } = req.body;
     pool.query(`update Order_info set Status = 'Cooked' where OrderID = $1;`, [ord], (err, results) => {
         if (err) {
             console.log(err)
@@ -545,9 +535,8 @@ app.post("/onl_ords_update/:ordid", async(req, res) => {
     });
 });
 
-app.post("/offl_ords_update/:tblid/:dishid", async(req, res) => {
-    var tblid = req.params.tblid;
-    var dishid = req.params.dishid;
+app.post("/offl_ords_update", async(req, res) => {
+    const { tblid, dishid } = req.body;
     pool.query(`update Table_cart set CookedQuantity = CookedQuantity+
   OrderQuantity, OrderQuantity = 0 where TableID = $1 and DishID=
   $2;`, [tblid, dishid], (err, results) => {
@@ -560,10 +549,8 @@ app.post("/offl_ords_update/:tblid/:dishid", async(req, res) => {
     });
 });
 
-app.post("/add_items/:quantity/:itemid/:today", async(req, res) => {
-    var quantity = req.params.quantity;
-    var itemid = req.params.itemid;
-    var today = req.params.today;
+app.post("/add_items", async(req, res) => {
+    const { quantity, itemid, today } = req.body;
     pool.query(`update Inventory set Quantity = Quantity+$1 where ItemID=$2;`, [quantity, itemid], (err, results) => {
         if (err) {
             console.log(err)
@@ -583,9 +570,8 @@ app.post("/add_items/:quantity/:itemid/:today", async(req, res) => {
     });
 });
 
-app.post("/update_status_menu/:dishid/:avbl", async(req, res) => {
-    var avbl = req.params.avbl;
-    var dishid = req.params.dishid;
+app.post("/update_status_menu", async(req, res) => {
+    const { avbl, dishid } = req.body;
     pool.query(`update Dish set Available = $2 where DishID = $1;`, [dishid, avbl], (err, results) => {
         if (err) {
             console.log(err)
@@ -596,12 +582,8 @@ app.post("/update_status_menu/:dishid/:avbl", async(req, res) => {
     });
 });
 
-app.post("/insert_dish/:name/:price/:avbl/:nv/:cat", async(req, res) => {
-    var name = req.params.name;
-    var price = req.params.price;
-    var avbl = req.params.avbl;
-    var nv = req.params.nv;
-    var cat = req.params.cat;
+app.post("/insert_dish", async(req, res) => {
+    const { name, price, avbl, nv, cat } = req.body;
     pool.query(`Insert into Dish values ($1,$2,$3,$4,$5);`, [name, price, avbl, nv, cat], (err, results) => {
         if (err) {
             console.log(err)
@@ -612,8 +594,8 @@ app.post("/insert_dish/:name/:price/:avbl/:nv/:cat", async(req, res) => {
     });
 });
 
-app.post("/del_dish/:dishid", async(req, res) => {
-    var dishid = req.params.dishid;
+app.post("/del_dish", async(req, res) => {
+    const { dishid } = req.body;
     pool.query(`delete from Dish where DishID=$1`, [dishid], (err, results) => {
         if (err) {
             console.log(err)
@@ -624,9 +606,8 @@ app.post("/del_dish/:dishid", async(req, res) => {
     });
 });
 
-app.post("/apply_offer/:usrnme/:coup", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var coup = req.params.coup;
+app.post("/apply_offer", async(req, res) => {
+    const { usrnme, coup } = req.body;
     pool.query(`Insert into Cust_Coup values($1,$2);`, [usrnme, coup], (err, results) => {
         if (err) {
             console.log(err)
@@ -637,13 +618,8 @@ app.post("/apply_offer/:usrnme/:coup", async(req, res) => {
     });
 });
 
-app.post("/hire_chef/:usrnme/:nme/:contact/:salary/:pass/:role", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var nme = req.params.nme;
-    var contact = req.params.contact;
-    var salary = req.params.salary;
-    var pass = req.params.pass;
-    var role = req.params.role;
+app.post("/hire_chef", async(req, res) => {
+    const { usrnme, nme, contact, salary, pass, role } = req.body;
     pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$5);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
         if (err) {
             console.log(err)
@@ -654,12 +630,8 @@ app.post("/hire_chef/:usrnme/:nme/:contact/:salary/:pass/:role", async(req, res)
     });
 });
 
-app.post("/hire_waiter/:usrnme/:nme/:contact/:salary/:pass", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var nme = req.params.nme;
-    var contact = req.params.contact;
-    var salary = req.params.salary;
-    var pass = req.params.pass;
+app.post("/hire_waiter", async(req, res) => {
+    const { usrnme, nme, contact, salary, pass } = req.body;
     pool.query(`insert into Waiter values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
         if (err) {
             console.log(err)
@@ -670,12 +642,8 @@ app.post("/hire_waiter/:usrnme/:nme/:contact/:salary/:pass", async(req, res) => 
     });
 });
 
-app.post("/hire_delperson/:usrnme/:nme/:contact/:salary/:pass", async(req, res) => {
-    var usrnme = req.params.usrnme;
-    var nme = req.params.nme;
-    var contact = req.params.contact;
-    var salary = req.params.salary;
-    var pass = req.params.pass;
+app.post("/hire_delperson", async(req, res) => {
+    const { usrnme, nme, contact, salary, pass } = req.body;
     pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
         if (err) {
             console.log(err)
@@ -686,8 +654,8 @@ app.post("/hire_delperson/:usrnme/:nme/:contact/:salary/:pass", async(req, res) 
     });
 });
 
-app.post("/fire_chef/:usrnme", async(req, res) => {
-    var usrnme = req.params.usrnme;
+app.post("/fire_chef", async(req, res) => {
+    const { usrnme } = req.body;
     pool.query(`delete from Chef where Username=$1`, [usrnme], (err, results) => {
         if (err) {
             console.log(err)
@@ -698,8 +666,8 @@ app.post("/fire_chef/:usrnme", async(req, res) => {
     });
 });
 
-app.post("/fire_waiter/:usrnme", async(req, res) => {
-    var usrnme = req.params.usrnme;
+app.post("/fire_waiter", async(req, res) => {
+    const { usrnme } = req.body;
     pool.query(`delete from Waiter where Username=$1`, [usrnme], (err, results) => {
         if (err) {
             console.log(err)
@@ -710,8 +678,8 @@ app.post("/fire_waiter/:usrnme", async(req, res) => {
     });
 });
 
-app.post("/fire_delperson/:usrnme", async(req, res) => {
-    var usrnme = req.params.usrnme;
+app.post("/fire_delperson", async(req, res) => {
+    const { usrnme } = req.body;
     pool.query(`delete from Delivery_Man where Username=$1`, [usrnme], (err, results) => {
         if (err) {
             console.log(err)
@@ -722,12 +690,8 @@ app.post("/fire_delperson/:usrnme", async(req, res) => {
     });
 });
 
-app.post("/add_coupons/:expr_date/:usr_cat/:discount/:min_bill/:max_discount", async(req, res) => {
-    var expr_date = req.params.expr_date;
-    var usr_cat = req.params.usr_cat;
-    var discount = req.params.discount;
-    var min_bill = req.params.min_bill;
-    var max_discount = req.params.max_discount;
+app.post("/add_coupons", async(req, res) => {
+    const { expr_date, usr_cat, discount, min_bill, max_discount } = req.body;
     pool.query(`insert into Coupon values($1, $2, $3, $4, $5);`, [expr_date, usr_cat, discount, min_bill, max_discount], (err, results) => {
         if (err) {
             console.log(err)
@@ -738,9 +702,8 @@ app.post("/add_coupons/:expr_date/:usr_cat/:discount/:min_bill/:max_discount", a
     });
 });
 
-app.post("/assign_delperson/:delid/:ordid", async(req, res) => {
-    var delid = req.params.delid;
-    var ordid = req.params.ordid;
+app.post("/assign_delperson", async(req, res) => {
+    const { delid, ordid } = req.body;
     pool.query(`update Order_info set DeliveryID=$1, Status='Out for delivery'
     where OrderID=$2;`, [delid, ordid], (err, results) => {
         if (err) {
@@ -760,9 +723,8 @@ app.post("/assign_delperson/:delid/:ordid", async(req, res) => {
     });
 });
 
-app.post("/delivered/:delid/:ordid", async(req, res) => {
-    var delid = req.params.delid;
-    var ordid = req.params.ordid;
+app.post("/delivered", async(req, res) => {
+    const { delid, ordid } = req.body;
     pool.query(`update Order_info set DeliveryID=NULL, Status='Delivered'
     where OrderID=$1;`, [ordid], (err, results) => {
         if (err) {

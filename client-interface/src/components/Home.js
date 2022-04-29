@@ -5,7 +5,6 @@ const Home = () => {
   return (
     <Fragment>
       <div>
-        Hi
       </div>
     </Fragment >
   );
