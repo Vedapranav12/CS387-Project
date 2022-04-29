@@ -23,6 +23,7 @@ import DeliveryManagerAllPersons from './components/DeliveryManager/DeliveryMana
 import DeliveryAgent from './components/DeliveryAgent/deliveryAgent';
 import TableManager from './components/TableManager/TableManager';
 import Chef from './components/Chef/Chef';
+import ViewOrder from './components/TableManager/ViewOrder';
 function App() {
   return (
     <div>
@@ -45,6 +46,7 @@ function App() {
               <Route path="/online_checkout" element={<OnlineCheckout />} />
               <Route path="/user_history" element={<ListUserOrders />} />
               <Route path="/update_profile" element={<UpdateProfile />} />
+              <Route path='/vieworder/:tblid' element={<ViewOrder/>}/>
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}
             </Routes>

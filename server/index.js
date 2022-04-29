@@ -231,6 +231,16 @@ app.get("/pend_ords_offl", async (req, res) => {
     }
 });
 
+app.get("/view_ord/:tblid", async(req, res) => {
+    try {
+        var tblid = req.params.tblid;
+        const CurrentOrder = await pool.query(`select Dish.Name, Table_cart.OrderQuantity from Table_cart, Dish where Table_cart.DishID = Dish.DishID and Table_cart.TableID = $1`, [tblid]);
+        res.json(CurrentOrder.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
 app.get("/view_menu", async (req, res) => {
     try {
         const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where Available='Yes' order by Category ASC, Non_Veg DESC;`);

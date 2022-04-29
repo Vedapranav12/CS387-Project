@@ -65,6 +65,13 @@ const TableManager = () => {
         console.error(error)
       })
   };
+
+  const ViewOrder = async (e) => {
+    let tableId = parseInt(e.target.value);
+    let path = `/vieworder/${tableId}`;
+    navigate(path);
+  };
+
   return (
     <Fragment >
       <div className="demo">
@@ -94,7 +101,7 @@ const TableManager = () => {
                             <Button disabled={data.status=='Not free'} onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
                           </td>
                           <td>
-                            <Button disabled={data.status=='Free'} onClick={handleFree} value={data.tableid}> View Order </Button>
+                            <Button disabled={data.status=='Free'} onClick={ViewOrder} value={data.tableid}> View Order </Button>
                           </td>
                         </tr>
                       ))}
