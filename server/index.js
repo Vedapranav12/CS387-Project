@@ -28,7 +28,7 @@ pg.types.setTypeParser(pg.types.builtins.NUMERIC, (value) => {
     return parseFloat(value);
 });
 
-const store = new(require('connect-pg-simple')(session))({
+const store = new (require('connect-pg-simple')(session))({
     conObject,
 });
 
@@ -63,14 +63,14 @@ app.use(
 function postTrimmer(req, res, next) {
     if (req.method === 'POST') {
         for (const [key, value] of Object.entries(req.body)) {
-            if (typeof(value) === 'string')
+            if (typeof (value) === 'string')
                 req.body[key] = value.trim();
         }
     }
     next();
 }
 
-app.post('/register', async(req, res) => {
+app.post('/register', async (req, res) => {
     try {
         const { Address, Username, Name, Contact, Passcode, Zip } = req.body;
         let info = await pool.query("insert into Customer (Address, Username, Name, Contact, Passcode, Zip) values ($1, $2, $3, $4, crypt($5, gen_salt('bf')), $6) RETURNING *;", [Address, Username, Name, Contact, Passcode, Zip]);
@@ -92,7 +92,7 @@ app.post('/register', async(req, res) => {
     }
 });
 
-app.post('/login', async(req, res) => {
+app.post('/login', async (req, res) => {
     try {
         const { Username, Passcode, identifyRole } = req.body;
         let info;
@@ -125,7 +125,7 @@ app.post('/login', async(req, res) => {
     }
 });
 
-app.post('/logout', async(req, res) => {
+app.post('/logout', async (req, res) => {
     try {
         await req.session.destroy();
         res.sendStatus(200);
@@ -151,14 +151,14 @@ app.post('/fetch-user', async (req, res) => {
     }
 })
 
+app.get("/dummy", async (req, res) => {
+    // console.log(req);
+    console.log(req.session.user, "Here");
+    res.status(200).send({ message: "Works" });
+    // const playerBasicInfo = await pool.query("select * from cart");
+})
 
-// app.get("/dummy", async (req, res) => {
-//     res.status(200).send({ message: "Works" });
-//     const playerBasicInfo = await pool.query("select * from cart");
-//     console.log(playerBasicInfo);
-// })
-
-app.post("/assign_tbl", async(req, res) => {
+app.post("/assign_tbl", async (req, res) => {
     const { tbl_id } = req.body;
     pool.query("update table_info set Status = 'Not Free' where TableID = $1", [tbl_id], (err, results) => {
         if (err) {
@@ -170,7 +170,7 @@ app.post("/assign_tbl", async(req, res) => {
     });
 });
 
-app.get("/insuff_ing_off/:tbl_id", async(req, res) => {
+app.get("/insuff_ing_off/:tbl_id", async (req, res) => {
     try {
         var id = req.params.tbl_id;
         const InsuffIngredsOff = await pool.query(`select inv.ItemID,
@@ -185,7 +185,7 @@ app.get("/insuff_ing_off/:tbl_id", async(req, res) => {
     }
 });
 
-app.get("/insuff_ing_onl/:usernme", async(req, res) => {
+app.get("/insuff_ing_onl/:usernme", async (req, res) => {
     try {
         var id = req.params.usernme;
         const InsuffIngredsOnl = await pool.query(`select inv.ItemID,
@@ -200,7 +200,7 @@ app.get("/insuff_ing_onl/:usernme", async(req, res) => {
     }
 });
 
-app.get("/get_tables", async(req, res) => {
+app.get("/get_tables", async (req, res) => {
     try {
         const TableData = await pool.query(`select * from Table_info;`);
         res.json(TableData.rows);
@@ -209,7 +209,7 @@ app.get("/get_tables", async(req, res) => {
     }
 })
 
-app.get("/pend_ords", async(req, res) => {
+app.get("/pend_ords", async (req, res) => {
     try {
         const PendingOrds = await pool.query(`select O1.OrderID,DishID, Quantity from Order_items
     as O1 inner join Order_info as O2 on O1.OrderID=O2.OrderID where
@@ -222,7 +222,7 @@ app.get("/pend_ords", async(req, res) => {
     }
 });
 
-app.get("/view_menu", async(req, res) => {
+app.get("/view_menu", async (req, res) => {
     try {
         const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where Available='Yes' order by Category ASC, Non_Veg DESC;`);
         res.json(Menu.rows);
@@ -242,7 +242,7 @@ app.get("/ord_history/:usrnme", async (req, res) => {
     }
 });
 
-app.get("/curr_ords/:usrnme", async(req, res) => {
+app.get("/curr_ords/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
         const DelOrdList = await pool.query(`select OrderID, Delivery_Man.Name, Status, Time
@@ -254,7 +254,7 @@ app.get("/curr_ords/:usrnme", async(req, res) => {
     }
 });
 
-app.get("/onl_cook_ords", async(req, res) => {
+app.get("/onl_cook_ords", async (req, res) => {
     try {
         const OnlCookOrds = await pool.query(`select OrderID, Zip, Time from Order_info as o inner join Customer as
     c on o.CustomerID=c.Username where Status='Cooked';`);
@@ -264,7 +264,7 @@ app.get("/onl_cook_ords", async(req, res) => {
     }
 });
 
-app.get("/del_ppl/:pincode", async(req, res) => {
+app.get("/del_ppl/:pincode", async (req, res) => {
     try {
         var pincode = req.params.pincode;
         const DelPpl = await pool.query(`select Username,Name,Contact from Delivery_Man where Available='Yes'
@@ -277,7 +277,7 @@ app.get("/del_ppl/:pincode", async(req, res) => {
     }
 });
 
-app.get("/coupons/:usrnme", async(req, res) => {
+app.get("/coupons/:usrnme", async (req, res) => {
     try {
         var id = req.params.usrnme;
         const Coupons = await pool.query(`select couponid,expiry date,category,discount,min_bill,max_discount from
@@ -291,7 +291,7 @@ app.get("/coupons/:usrnme", async(req, res) => {
     }
 });
 
-app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
+app.get("/login/:tbl/:usrnme/:pass", async (req, res) => {
     try {
         var tbl = req.params.tbl;
         var usrnme = req.params.usrnme;
@@ -304,7 +304,7 @@ app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
     }
 });
 
-app.get("/all_del_persons", async(req, res) => {
+app.get("/all_del_persons", async (req, res) => {
     try {
         const DeliveryPersonData = await pool.query(`select Name, Available, OrderID from Delivery_Man, Order_info where Order_info.DeliveryID = Delivery_Man.Username;`);
         res.json(DeliveryPersonData.rows);
@@ -313,7 +313,7 @@ app.get("/all_del_persons", async(req, res) => {
     }
 });
 
-app.get("/order_for_delivery/:delid", async(req, res) => {
+app.get("/order_for_delivery/:delid", async (req, res) => {
     try {
         var delid = req.params.delid;
         const OrderData = await pool.query(`select Order_info.OrderID, Dish.Name, Quantity, Address from Dish, Order_items, Order_info, Customer where Order_items.OrderID = Order_info.OrderID and Order_items.DishID = Dish.DishID and Order_info.DeliveryID = $1 and Order_info.CustomerID = Customer.Username`, [delid]);
@@ -323,7 +323,7 @@ app.get("/order_for_delivery/:delid", async(req, res) => {
     }
 });
 
-app.post("/signup", async(req, res) => {
+app.post("/signup", async (req, res) => {
     const { addr, usrnme, nme, contact, pass, zip } = req.body;
     pool.query(`insert into Customer values(Address,Username,Name,Contact,
       crypt(Passcode,gen_salt('bf')),Zip);`, [addr, usrnme, nme, contact, pass, zip], (err, results) => {
@@ -337,26 +337,26 @@ app.post("/signup", async(req, res) => {
 });
 
 app.get("/get_user_details/:usrnme", async (req, res) => {
-  try {
-      var id = req.params.usrnme;
-      const usrDetails = await pool.query(`select Name, Address, Contact, Zip from Customer where Username=$1;`, [id]);
-      console.log(usrDetails.rows);
-      res.json(usrDetails.rows);
-  } catch (err) {
-      console.error(err.message);
-  }
+    try {
+        var id = req.params.usrnme;
+        const usrDetails = await pool.query(`select Name, Address, Contact, Zip from Customer where Username=$1;`, [id]);
+        console.log(usrDetails.rows);
+        res.json(usrDetails.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
 });
 
 app.post("/editprofile/", async (req, res) => {
-  const {usrnme, Name, Address, Contact, Zip} = req.body;
-  pool.query("update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1", [usrnme, Name, Address, Contact, Zip], (err, results) => {
-    if (err) {
-        console.log(err)
-        res.status(400).send({ message: 'Please try again later' });
-    } else {
-        res.status(200).json(results.rows);
-    }
-});
+    const { usrnme, Name, Address, Contact, Zip } = req.body;
+    pool.query("update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1", [usrnme, Name, Address, Contact, Zip], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
 });
 
 // app.post("/editprofile", async (req, res) => {
@@ -396,7 +396,7 @@ app.post("/insert_table_cart", async (req, res) => {
     });
 });
 
-app.post("/sub_ingreds_tbl_cart", async(req, res) => {
+app.post("/sub_ingreds_tbl_cart", async (req, res) => {
     const { tblid } = req.body;
     pool.query(`with consumed as (select ing.ItemID,
     sum(CartQuantity*ing.Quantity) as quantity from Table_cart as tc inner
@@ -413,7 +413,7 @@ app.post("/sub_ingreds_tbl_cart", async(req, res) => {
 });
 
 app.post("/insert_cart", async (req, res) => {
-  const { usrnme, dishid, quantity } = req.body;
+    const { usrnme, dishid, quantity } = req.body;
     pool.query(`insert into Cart as tc values($1, $2,
     $3) ON conflict (CustomerID,DIshID) do update set quantity =
     tc.quantity+$3;`, [usrnme, dishid, quantity], (err, results) => {
@@ -427,7 +427,7 @@ app.post("/insert_cart", async (req, res) => {
 });
 
 app.post("/remove_cart", async (req, res) => {
-  const { usrnme, dishid, quantity } = req.body;
+    const { usrnme, dishid, quantity } = req.body;
     pool.query(`update Cart set Quantity =
     Quantity-$3 where CustomerID=$1 and DIshID=$2 and Quantity>=$3;`, [usrnme, dishid, quantity], (err, results) => {
         if (err) {
@@ -439,24 +439,24 @@ app.post("/remove_cart", async (req, res) => {
     });
 });
 
-app.get("/user_cart/:usrnme", async(req,res) => {
-  try{
-  var usrnme = req.params.usrnme;
-  const cart_items = await pool.query(`select c.DishID, d.Name, d.Price, c.Quantity from 
+app.get("/user_cart/:usrnme", async (req, res) => {
+    try {
+        var usrnme = req.params.usrnme;
+        const cart_items = await pool.query(`select c.DishID, d.Name, d.Price, c.Quantity from 
   cart as c inner join Dish as d on c.DIshID=d.DIshID where c.CustomerID=$1 and c.quantity>0;`, [usrnme]);
-  res.json(cart_items.rows);
-  } catch(err){
-    console.error(err.message);
-  }
+        res.json(cart_items.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
 });
 
-app.get("/check_zip/:zip", async (req,res) => {
-  try{
-    var zip = req.params.zip;
-    const zips = await pool.query(`select primary_zip from Pincode where primary_zip = $1;`, [zip]);
-    res.json(zips.rows);
-    } catch(err){
-      console.error(err.message);
+app.get("/check_zip/:zip", async (req, res) => {
+    try {
+        var zip = req.params.zip;
+        const zips = await pool.query(`select primary_zip from Pincode where primary_zip = $1;`, [zip]);
+        res.json(zips.rows);
+    } catch (err) {
+        console.error(err.message);
     }
 });
 
@@ -477,7 +477,7 @@ app.post("/sub_ingreds_cart", async (req, res) => {
     });
 });
 
-app.post("/checkout_offl", async(req, res) => {
+app.post("/checkout_offl", async (req, res) => {
     const { tblid } = req.body;
     pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tblid], (err, results) => {
         if (err) {
@@ -497,8 +497,8 @@ app.post("/checkout_offl", async(req, res) => {
     });
 });
 
-app.post("/set_addr", async(req, res) => {
-    const { usrnme,addr,zip } = req.body;
+app.post("/set_addr", async (req, res) => {
+    const { usrnme, addr, zip } = req.body;
     pool.query(`update Customer set Address = $1, Zip = $2
   where Username = $3;`, [addr, zip, usrnme], (err, results) => {
         if (err) {
@@ -510,8 +510,8 @@ app.post("/set_addr", async(req, res) => {
     });
 });
 
-app.post("/ins_ord", async(req, res) => {
-    const { usrnme,timestamp } = req.body;
+app.post("/ins_ord", async (req, res) => {
+    const { usrnme, timestamp } = req.body;
     pool.query(`insert into Order_info values(NULL, $1,'Received',
     $2);`, [usrnme, timestamp], (err, results) => {
         if (err) {
@@ -523,7 +523,7 @@ app.post("/ins_ord", async(req, res) => {
     });
 });
 
-app.post("/onl_ords_update", async(req, res) => {
+app.post("/onl_ords_update", async (req, res) => {
     const { ord } = req.body;
     pool.query(`update Order_info set Status = 'Cooked' where OrderID = $1;`, [ord], (err, results) => {
         if (err) {
@@ -535,7 +535,7 @@ app.post("/onl_ords_update", async(req, res) => {
     });
 });
 
-app.post("/offl_ords_update", async(req, res) => {
+app.post("/offl_ords_update", async (req, res) => {
     const { tblid, dishid } = req.body;
     pool.query(`update Table_cart set CookedQuantity = CookedQuantity+
   OrderQuantity, OrderQuantity = 0 where TableID = $1 and DishID=
@@ -549,7 +549,7 @@ app.post("/offl_ords_update", async(req, res) => {
     });
 });
 
-app.post("/add_items", async(req, res) => {
+app.post("/add_items", async (req, res) => {
     const { quantity, itemid, today } = req.body;
     pool.query(`update Inventory set Quantity = Quantity+$1 where ItemID=$2;`, [quantity, itemid], (err, results) => {
         if (err) {
@@ -570,7 +570,7 @@ app.post("/add_items", async(req, res) => {
     });
 });
 
-app.post("/update_status_menu", async(req, res) => {
+app.post("/update_status_menu", async (req, res) => {
     const { avbl, dishid } = req.body;
     pool.query(`update Dish set Available = $2 where DishID = $1;`, [dishid, avbl], (err, results) => {
         if (err) {
@@ -582,7 +582,7 @@ app.post("/update_status_menu", async(req, res) => {
     });
 });
 
-app.post("/insert_dish", async(req, res) => {
+app.post("/insert_dish", async (req, res) => {
     const { name, price, avbl, nv, cat } = req.body;
     pool.query(`Insert into Dish values ($1,$2,$3,$4,$5);`, [name, price, avbl, nv, cat], (err, results) => {
         if (err) {
@@ -594,7 +594,7 @@ app.post("/insert_dish", async(req, res) => {
     });
 });
 
-app.post("/del_dish", async(req, res) => {
+app.post("/del_dish", async (req, res) => {
     const { dishid } = req.body;
     pool.query(`delete from Dish where DishID=$1`, [dishid], (err, results) => {
         if (err) {
@@ -606,7 +606,7 @@ app.post("/del_dish", async(req, res) => {
     });
 });
 
-app.post("/apply_offer", async(req, res) => {
+app.post("/apply_offer", async (req, res) => {
     const { usrnme, coup } = req.body;
     pool.query(`Insert into Cust_Coup values($1,$2);`, [usrnme, coup], (err, results) => {
         if (err) {
@@ -618,7 +618,7 @@ app.post("/apply_offer", async(req, res) => {
     });
 });
 
-app.post("/hire_chef", async(req, res) => {
+app.post("/hire_chef", async (req, res) => {
     const { usrnme, nme, contact, salary, pass, role } = req.body;
     pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$5);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
         if (err) {
@@ -630,7 +630,7 @@ app.post("/hire_chef", async(req, res) => {
     });
 });
 
-app.post("/hire_waiter", async(req, res) => {
+app.post("/hire_waiter", async (req, res) => {
     const { usrnme, nme, contact, salary, pass } = req.body;
     pool.query(`insert into Waiter values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
         if (err) {
@@ -642,7 +642,7 @@ app.post("/hire_waiter", async(req, res) => {
     });
 });
 
-app.post("/hire_delperson", async(req, res) => {
+app.post("/hire_delperson", async (req, res) => {
     const { usrnme, nme, contact, salary, pass } = req.body;
     pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
         if (err) {
@@ -654,7 +654,7 @@ app.post("/hire_delperson", async(req, res) => {
     });
 });
 
-app.post("/fire_chef", async(req, res) => {
+app.post("/fire_chef", async (req, res) => {
     const { usrnme } = req.body;
     pool.query(`delete from Chef where Username=$1`, [usrnme], (err, results) => {
         if (err) {
@@ -666,7 +666,7 @@ app.post("/fire_chef", async(req, res) => {
     });
 });
 
-app.post("/fire_waiter", async(req, res) => {
+app.post("/fire_waiter", async (req, res) => {
     const { usrnme } = req.body;
     pool.query(`delete from Waiter where Username=$1`, [usrnme], (err, results) => {
         if (err) {
@@ -678,7 +678,7 @@ app.post("/fire_waiter", async(req, res) => {
     });
 });
 
-app.post("/fire_delperson", async(req, res) => {
+app.post("/fire_delperson", async (req, res) => {
     const { usrnme } = req.body;
     pool.query(`delete from Delivery_Man where Username=$1`, [usrnme], (err, results) => {
         if (err) {
@@ -690,7 +690,7 @@ app.post("/fire_delperson", async(req, res) => {
     });
 });
 
-app.post("/add_coupons", async(req, res) => {
+app.post("/add_coupons", async (req, res) => {
     const { expr_date, usr_cat, discount, min_bill, max_discount } = req.body;
     pool.query(`insert into Coupon values($1, $2, $3, $4, $5);`, [expr_date, usr_cat, discount, min_bill, max_discount], (err, results) => {
         if (err) {
@@ -702,7 +702,7 @@ app.post("/add_coupons", async(req, res) => {
     });
 });
 
-app.post("/assign_delperson", async(req, res) => {
+app.post("/assign_delperson", async (req, res) => {
     const { delid, ordid } = req.body;
     pool.query(`update Order_info set DeliveryID=$1, Status='Out for delivery'
     where OrderID=$2;`, [delid, ordid], (err, results) => {
@@ -723,7 +723,7 @@ app.post("/assign_delperson", async(req, res) => {
     });
 });
 
-app.post("/delivered", async(req, res) => {
+app.post("/delivered", async (req, res) => {
     const { delid, ordid } = req.body;
     pool.query(`update Order_info set DeliveryID=NULL, Status='Delivered'
     where OrderID=$1;`, [ordid], (err, results) => {
@@ -768,7 +768,7 @@ app.get("/matches", async (req, res) => {
     }
 });
 
-app.get("/matches/:match_id", async(req, res) => {
+app.get("/matches/:match_id", async (req, res) => {
     try {
         const { match_id } = req.params;
         const battingDetails = await pool.query("with all_batsmen as ( select distinct striker as batter from ball_by_ball where match_id = $1 UNION select distinct non_striker as batter from ball_by_ball where match_id = $1 ), score_info as ( select innings_no, striker, sum(runs_scored) as runs, count(*) filter (where runs_scored=4) as no_fours, count(*) filter (where runs_scored=6) as no_sixes, count(*) as balls_faced from ball_by_ball where match_id = $1 group by striker, innings_no ) select innings_no, all_batsmen.batter as batter, player_name, COALESCE(score_info.runs, 0) as runs, COALESCE(score_info.no_fours, 0) as no_fours, COALESCE(score_info.no_sixes, 0) as no_sixes, COALESCE(score_info.balls_faced, 0) as balls_faced from all_batsmen left outer join score_info on all_batsmen.batter = score_info.striker, player where all_batsmen.batter = player.player_id;", [match_id]);
@@ -787,7 +787,7 @@ app.get("/matches/:match_id", async(req, res) => {
 });
 
 
-app.get("/players/:player_id", async(req, res) => {
+app.get("/players/:player_id", async (req, res) => {
     try {
         const { player_id } = req.params;
 
@@ -804,7 +804,7 @@ app.get("/players/:player_id", async(req, res) => {
 });
 
 
-app.get("/pointstable/:year", async(req, res) => {
+app.get("/pointstable/:year", async (req, res) => {
     try {
         const { year } = req.params;
         const pointsTableInfo = await pool.query("select team_name,Mat,Won,Mat-Won as Lost,0 as Tied, ROUND(coalesce(sum(case when team_1=team_id then runs_1 else runs_2 end),0)*1.0/coalesce(sum(case when team_id=team_1 then max_1 else max_2 end),1)-coalesce(sum(case when team_2=team_id then runs_1 else runs_2 end),0)*1.0/coalesce(sum(case when team_id=team_2 then max_1 else max_2 end),1),3) as NR,2*Won as pts from (select team_name,team_id,coalesce(count(match_id),0) as Mat,coalesce(count(match_id) filter(where match_winner=team_id),0) as Won from team left outer join (select * from match where season_year = $1) as match1 on team_id=team1 or team_id=team2 group by (team_id)) as w left outer join (select b.match_id,case when win_type='runs' then match_winner else team1+team2-match_winner end as team_1,coalesce(sum(runs_scored+extra_runs) filter(where innings_no=1),0) as runs_1,coalesce(max(over_id) filter(where innings_no=1),0) as max_1,case when win_type='wickets' then match_winner else team1+team2-match_winner end as team_2,coalesce(sum(runs_scored+extra_runs) filter(where innings_no=2),0) as runs_2,coalesce(max(over_id) filter(where innings_no=2),0) as max_2 from match as m inner join ball_by_ball as b on b.match_id=m.match_id where season_year = $1 group by (b.match_id,win_type,team1,team2,match_winner)) as r on team_id=team_1 or team_id=team_2 where Mat<>0 group by (team_name,Mat,Won) order by pts desc;", [year]);
@@ -815,7 +815,7 @@ app.get("/pointstable/:year", async(req, res) => {
 });
 
 
-app.get("/venues", async(req, res) => {
+app.get("/venues", async (req, res) => {
     try {
         const allVenues = await pool.query("select * from venue;");
         res.json(allVenues.rows);
@@ -825,7 +825,7 @@ app.get("/venues", async(req, res) => {
 });
 
 
-app.get("/venue/:venue_id", async(req, res) => {
+app.get("/venue/:venue_id", async (req, res) => {
     try {
         const { venue_id } = req.params;
 
@@ -844,7 +844,7 @@ app.get("/venue/:venue_id", async(req, res) => {
     }
 });
 
-app.post("/venues/add", async(req, res) => {
+app.post("/venues/add", async (req, res) => {
 
     const { venue_name, city_name, country_name, capacity } = req.body
     pool.query("INSERT INTO venue(venue_name,city_name,country_name,capacity) values ($1,$2,$3,$4)", [venue_name, city_name, country_name, capacity], (err, results) => {
