@@ -15,7 +15,10 @@ import DeliveryManagerListPersons from './components/DeliveryManager/DeliveryMan
 import Header from './components/Header';
 import GlobalContext from './providers/GlobalContext';
 import GlobalContextProvider from './providers/GlobalContextProvider';
-
+import DeliveryManagerAllPersons from './components/DeliveryManager/DeliveryManagerAllPersons';
+import DeliveryAgent from './components/DeliveryAgent/deliveryAgent';
+import TableManager from './components/TableManager/TableManager';
+import Chef from './components/Chef/Chef';
 function App() {
   return (
     <div>
@@ -29,8 +32,11 @@ function App() {
               <Route path="/menu" element={<ListMenu />} />
               <Route path="/register" element={<Register />} />
               <Route path="/deli_manager" element={<DeliveryManager />} />
-              <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} />
+              <Route path="/deli_manager/order_info/:pincode" element={<DeliveryManagerListPersons />} />
               <Route path="/deli_manager/all_persons" element={<DeliveryManagerAllPersons />} />
+              <Route path='/deli_agent/' element={<DeliveryAgent/>}/>
+              <Route path='/tbl_mngr' element={<TableManager/>}/>
+              <Route path='/chef' element={<Chef/>}/>
             </Routes>
           </div>
         </BrowserRouter>

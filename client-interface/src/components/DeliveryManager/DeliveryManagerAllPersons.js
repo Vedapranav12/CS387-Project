@@ -1,17 +1,15 @@
 import React, { Fragment, useEffect, useState } from "react";
-
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MDBDataTableV5 } from 'mdbreact';
 
 const DeliveryManagerAllPersons = () => {
-  const navigate = useNavigate();
-  const params = useParams();
-  const pincode = params.pincode;
   const [listPersons, setlistPersons] = useState(null);
   useEffect(() => {
-    const getDeliveryPersons = async pincode => {
+    const getDeliveryPersons = async () => {
       try {
         const response = await fetch(`http://localhost:5000/all_del_persons`);
         const jsonData = await response.json();
+        console.log(jsonData);
         setlistPersons({
           columns: [
             {
@@ -29,20 +27,22 @@ const DeliveryManagerAllPersons = () => {
           ],
           rows: jsonData.map(list_persons => (
             {
-              name:list_persons.name,
-              contact: list_persons.Available,
-              orderid: list_persons.OrderID,
+              Name:list_persons.name,
+              Available: list_persons.available,
+              OrderID: list_persons.orderid,
             }
           )),
         });
+        console.log(listPersons);
 
       }
       catch (err) {
         console.log(err.message);
       }
+
     };
-    getDeliveryPersons(pincode);  
-  });
+    getDeliveryPersons();  
+  }, []);
   return (
     <Fragment >
       <div className="demo">

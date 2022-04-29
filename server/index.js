@@ -220,6 +220,15 @@ app.get("/insuff_ing_onl/:usernme", async(req, res) => {
     }
 });
 
+app.get("/get_tables", async(req, res) => {
+    try {
+        const TableData = await pool.query(`select * from Table_info;`);
+        res.json(TableData.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
 app.get("/pend_ords", async(req, res) => {
     try {
         const PendingOrds = await pool.query(`select O1.OrderID,DishID, Quantity from Order_items
@@ -268,7 +277,7 @@ app.get("/onl_cook_ords", async(req, res) => {
     try {
         const OnlCookOrds = await pool.query(`select OrderID, Zip, Time from Order_info as o inner join Customer as
     c on o.CustomerID=c.Username where Status='Cooked';`);
-        res.json(OnlCookOrds.rows());
+        res.json(OnlCookOrds.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -281,7 +290,7 @@ app.get("/del_ppl/:pincode", async(req, res) => {
     and Primary_Zip=$1 union select Username,Name,Contact from Delivery_Man
     as dm inner join Secondary as s on dm.Username=s.deliveryID
     where Available='Yes' and Zip=$1 and Primary_Zip!=$1;`, [pincode]);
-        res.json(DelPpl.rows());
+        res.json(DelPpl.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -295,7 +304,7 @@ app.get("/coupons/:usrnme", async(req, res) => {
     where cc.customerid=$1 and expiry_date>=CURRENT_DATE and couponid
     not in (select couponid from cust_coups as ccc where ccc.username=$1);
     `, [id]);
-        res.json(Coupons.rows());
+        res.json(Coupons.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -308,7 +317,7 @@ app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
         var pass = req.params.pass;
         const CheckPerson = await pool.query(`select count(*) from $1 where Username=$2
     and Passcode=crypt($3,Passcode)`, [tbl, usrnme, pass]);
-        res.json(CheckPerson.rows());
+        res.json(CheckPerson.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -316,12 +325,22 @@ app.get("/login/:tbl/:usrnme/:pass", async(req, res) => {
 
 app.get("/all_del_persons", async(req, res) => {
     try {
-        const DeliveryPersonData = await pool.query(`select Name, Availability, OrderID from Delivery_Man, Order_info where Order_info.DeliveryID = Delivery_Man.Username;`);
-        res.json(DeliveryPersonData.rows());
+        const DeliveryPersonData = await pool.query(`select Name, Available, OrderID from Delivery_Man, Order_info where Order_info.DeliveryID = Delivery_Man.Username;`);
+        res.json(DeliveryPersonData.rows);
     } catch (err) {
         console.error(err.message);
     }
-})
+});
+
+app.get("/order_for_delivery/:delid", async(req, res) => {
+    try {
+        var delid = req.params.delid;
+        const OrderData = await pool.query(`select Order_info.OrderID, Dish.Name, Quantity, Address from Dish, Order_items, Order_info, Customer where Order_items.OrderID = Order_info.OrderID and Order_items.DishID = Dish.DishID and Order_info.DeliveryID = $1 and Order_info.CustomerID = Customer.Username`, [delid]);
+        res.json(OrderData.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
 
 app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async(req, res) => {
     var addr = req.params.addr;

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { MDBDataTableV5 } from 'mdbreact';
 
 const DeliveryManagerListPersons = () => {
@@ -12,6 +12,7 @@ const DeliveryManagerListPersons = () => {
       try {
         const response = await fetch(`http://localhost:5000/del_ppl/${pincode}`);
         const jsonData = await response.json();
+        console.log(jsonData);
         setlistPersons({
           columns: [
             {
@@ -25,8 +26,8 @@ const DeliveryManagerListPersons = () => {
           ],
           rows: jsonData.map(list_persons => (
             {
-              name:list_persons.name,
-              contact: list_persons.Zip,
+              Name:list_persons.name,
+              Contact: list_persons.contact,
             }
           )),
         });
@@ -37,7 +38,7 @@ const DeliveryManagerListPersons = () => {
       }
     };
     getDeliveryPersons(pincode);  
-  });
+  }, []);
   return (
     <Fragment >
       <div className="demo">
