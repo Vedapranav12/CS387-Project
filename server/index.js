@@ -152,26 +152,6 @@ app.post('/fetch-user', async (req, res) => {
 })
 
 
-app.get("/editprofile/:username", async (req, res) => {
-    try {
-        var address = 0;
-        if (req.query.address) {
-            address = req.query.address;
-        }
-        var name = 0;
-        if (req.query.name) {
-            name = req.query.name;
-        }
-        var contact = 0;
-        if (req.query.contact) {
-            contact = req.query.contact;
-        }
-
-    } catch (err) {
-        console.error(err.message);
-    }
-});
-
 // app.get("/dummy", async (req, res) => {
 //     res.status(200).send({ message: "Works" });
 //     const playerBasicInfo = await pool.query("select * from cart");
@@ -241,6 +221,7 @@ app.get("/view_menu", async (req, res) => {
         console.error(err.message);
     }
 });
+
 
 app.get("/ord_history/:usrnme", async (req, res) => {
     try {
@@ -332,28 +313,51 @@ app.post("/signup/:addr/:usrnme/:nme/:contact/:pass/:zip", async (req, res) => {
     });
 });
 
-app.post("/editprofile/:tbl/:addr/:usrnme/:nme/:contact/:pass/:zip", async (req, res) => {
-    var addr = req.params.addr;
-    var usrnme = req.params.usrnme;
-    var nme = req.params.nme;
-    var contact = req.params.contact;
-    var pass = req.params.pass;
-    var zip = req.params.zip;
-    var tbl = req.params.tbl;
-    pool.query(`update $1
-                set Address = $2,
-                set Name = $4,
-                set Contact = $5,
-                set Zip = $6
-                where Username = $3;`, [tbl, addr, usrnme, nme, contact, pass, zip], (err, results) => {
-        if (err) {
-            console.log(err)
-            res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
-        }
-    });
+app.get("/get_user_details/:usrnme", async (req, res) => {
+  try {
+      var id = req.params.usrnme;
+      const usrDetails = await pool.query(`select Name, Address, Contact, Zip from Customer where Username=$1;`, [id]);
+      console.log(usrDetails.rows);
+      res.json(usrDetails.rows);
+  } catch (err) {
+      console.error(err.message);
+  }
 });
+
+app.post("/editprofile/", async (req, res) => {
+  const {usrnme, name, address, contact, zip} = req.body;
+  pool.query("update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1", [usrnme, name, address, contact, zip], (err, results) => {
+    if (err) {
+        console.log(err)
+        res.status(400).send({ message: 'Please try again later' });
+    } else {
+        res.status(200).json(results.rows);
+    }
+});
+});
+
+// app.post("/editprofile/:tbl/:addr/:usrnme/:nme/:contact/:pass/:zip", async (req, res) => {
+//     var addr = req.params.addr;
+//     var usrnme = req.params.usrnme;
+//     var nme = req.params.nme;
+//     var contact = req.params.contact;
+//     var pass = req.params.pass;
+//     var zip = req.params.zip;
+//     var tbl = req.params.tbl;
+//     pool.query(`update $1
+//                 set Address = $2,
+//                 set Name = $4,
+//                 set Contact = $5,
+//                 set Zip = $6
+//                 where Username = $3;`, [tbl, addr, usrnme, nme, contact, pass, zip], (err, results) => {
+//         if (err) {
+//             console.log(err)
+//             res.status(400).send({ message: 'Please try again later' });
+//         } else {
+//             res.status(200).json(results.rows);
+//         }
+//     });
+// });
 
 app.post("/insert_table_cart/:tblid/:dishid/:quantity", async (req, res) => {
     var tblid = req.params.tblid;
@@ -749,6 +753,7 @@ app.get("/order_for delivery/:delid", async (req, res) => {
         console.error(err.message);
     }
 });
+
 
 
 

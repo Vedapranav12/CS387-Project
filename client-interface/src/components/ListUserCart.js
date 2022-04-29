@@ -11,28 +11,23 @@ const ListUserCart = () => {
   const globalContext = useContext(GlobalContext);
   const user = globalContext.user;
   const [cartDetails, set_cartDetails] = useState([]);
+  const [grandTotal, setgrandTotal] = useState(0);
 
   const getUserCart = async () => {
     try {
       const usrnme=user.Username;
       const response = await fetch(`http://localhost:5000/user_cart/${usrnme}`);
       const jsonData = await response.json();
+      var total=0;
+      jsonData.forEach(dish => {
+        total += dish.price*dish.quantity;
+      });
+      setgrandTotal(total);
       set_cartDetails(jsonData);        
     } catch (err) {
       console.error(err.message);
     }
   };
-
-  // const handleSubmit = async (props) => {
-  //   let usrnme='whubbocks0';
-  //   let dishid=this.props.value;
-  //   let quantity=1;
-  //   try{
-  //   const response = await fetch(`http://localhost:5000/insert_cart/${usrnme}/${dishid}/${quantity}`);
-  //   } catch(err){
-  //     console.error(err.message);
-  //   }
-  // };
 
   useEffect(() => {
     getUserCart();
@@ -65,7 +60,7 @@ const ListUserCart = () => {
                         <td>{data.name}</td>
                         <td>{data.price}</td>
                         <td>{data.quantity}</td>
-                        <td>{data.price}*{data.quantity}</td>
+                        <td>{data.price*data.quantity}</td>
                         {/* <td>
                           <Button onClick={handleAdd} value={data.dishid}> Add </Button>
                         </td>
@@ -76,11 +71,12 @@ const ListUserCart = () => {
                     ))}
                   </tbody>
                 </table>
+                <h4>Grand Total: {grandTotal}</h4>
                 </div>
               </div>
             </div>
           </div>
-          <Link to="/menu"> <button type="button"> GO to Menu </button> </Link>
+          <Link to="/menu"> <button type="button"> Go back to Menu </button> </Link>
         </div>
         <br />
       </div>

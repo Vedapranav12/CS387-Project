@@ -9,6 +9,7 @@ import {
 import Home from './components/Home';
 import ListMenu from './components/ListMenu';
 import ListUserCart from './components/ListUserCart';
+import UpdateProfile from './components/UpdateProfile';
 import Register from './components/Register';
 import Login from './components/Login';
 import DeliveryManager from './components/DeliveryManager/DeliveryManager';
@@ -30,6 +31,7 @@ function App() {
               <Route path="/menu" element={<ListMenu />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user_cart" element={<ListUserCart />} />
+              <Route path="/update_profile" element={<UpdateProfile />} />
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}
             </Routes>
