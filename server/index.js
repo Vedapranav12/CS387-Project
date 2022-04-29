@@ -486,21 +486,21 @@ app.post("/sub_ingreds_cart", async (req, res) => {
 });
 
 app.post("/checkout_offl", async(req, res) => {
-    const { tblid } = req.body;
-    pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tblid], (err, results) => {
+    const { tableId } = req.body;
+    console.log(tableId, req.body);
+    pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tableId], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
         } else {
-            res.status(200).json(results.rows);
-        }
-    });
-    pool.query(`delete from Table_cart where TableID=$1;`, [tblid], (err, results) => {
-        if (err) {
-            console.log(err)
-            res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
+            pool.query(`delete from Table_cart where TableID=$1;`, [tableId], (err, results) => {
+                if (err) {
+                    console.log(err)
+                    res.status(400).send({ message: 'Please try again later' });
+                } else {
+                    res.status(200).json(results.rows);
+                }
+            });
         }
     });
 });
