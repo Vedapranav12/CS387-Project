@@ -2,7 +2,16 @@ import React, { useContext, useState, Fragment } from 'react';
 import GlobalContext from '../providers/GlobalContext';
 // import GlobalContextProvider from '../providers/GlobalContextProvider';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 
 const axios = require('axios');
 
@@ -40,22 +49,48 @@ const Header = () => {
 
   return (
     <div>
-      {globalContext.fetchingUser ? (
-        <h1 className="loader">Loading...</h1>
-      ) : (
-        <Fragment>
-          <h1>{user.Username ? `Logged in as ${user.Username} ${user.identifyRole}` : 'Not logged in'}</h1>
-          {user.Username ? (
-            <Button text="Logout" loading={loading} onClick={logout} />
-          ) : (
-            <Button text="Login" onClick={() => navigate('/login')} />
-          )}
+      <AppBar position="static">
+        <Toolbar>
+          {/*Inside the IconButton, we 
+           can render various icons*/}
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 2 }}
+          >
+            {/*This is a simple Menu 
+             Icon wrapped in Icon */}
+            <MenuIcon />
+          </IconButton>
+          {/* The Typography component applies 
+           default font weights and sizes */}
 
-          <Link to="/dashboard">Dashboard</Link>
-          <Link to="/change-password">Change Password</Link>
-        </Fragment>
-      )}
-    </div>
+          <Typography variant="h6"
+            component="div" sx={{ flexGrow: 1 }}>
+            Restaurant Management System
+          </Typography>
+          <Card color="inherit" sx={{ mx: 10 }} style={{ variant: "contained", border: "10px", boxShadow: "none", padding: "10px", borderRadius: 3 }}>
+            <Typography>
+              {user.Username ? ` Logged in as ${user.Username}, ${user.identifyRole} ` : ' Not logged in '}
+            </Typography>
+          </Card>
+          {user.Username ? (
+            <Button color="inherit" onClick={logout}> Logout </Button>
+          ) : (
+            <Button color="inherit" onClick={() => navigate('/login')}> Login </Button>
+          )}
+        </Toolbar>
+      </AppBar>
+      {
+        globalContext.fetchingUser ? (
+          <h1 className="loader">Loading...</h1>
+        ) : (
+          ''
+        )
+      }
+    </div >
   )
 }
 
