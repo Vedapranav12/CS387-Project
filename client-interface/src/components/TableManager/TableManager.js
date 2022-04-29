@@ -46,18 +46,24 @@ const TableManager = () => {
   };
   const handleOccupy = async (e) => {
     let tableId = parseInt(e.target.value);
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tableId })
-    };
-
-    try {
-      const response = await fetch("http://localhost:5000/assign_tbl/", requestOptions);
-      console.log(response);
-    } catch (err) {
-      console.error(err.message);
-    }
+    console.log(tableId);
+    axios
+      .post(`http://localhost:5000/assign_tbl`, { tableId: tableId }, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getList();
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   };
   return (
     <Fragment >
@@ -82,13 +88,13 @@ const TableManager = () => {
                           <td>{data.tableid}</td>
                           <td>{data.status}</td>
                           <td>
-                            <Button onClick={handleFree} value={data.tableid}> Free Table </Button>
+                            <Button disabled={data.status=='Free'} onClick={handleFree} value={data.tableid}> Free Table </Button>
                           </td>
                           <td>
-                            <Button onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
+                            <Button disabled={data.status=='Not free'} onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
                           </td>
                           <td>
-                            <Button onClick={handleFree} value={data.tableid}> View Order </Button>
+                            <Button disabled={data.status=='Free'} onClick={handleFree} value={data.tableid}> View Order </Button>
                           </td>
                         </tr>
                       ))}

@@ -159,8 +159,9 @@ app.get("/dummy", async (req, res) => {
 })
 
 app.post("/assign_tbl", async (req, res) => {
-    const { tbl_id } = req.body;
-    pool.query("update table_info set Status = 'Not Free' where TableID = $1", [tbl_id], (err, results) => {
+    const { tableId } = req.body;
+    console.log(tableId, req.body);
+    pool.query("update table_info set Status = 'Not free' where TableID = $1", [tableId], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Table not exist' });
