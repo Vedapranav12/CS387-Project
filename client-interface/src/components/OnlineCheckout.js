@@ -140,7 +140,7 @@ const OnlineCheckout = () => {
                 </div>
                 
                 <div className="col-sm-6">
-                  {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Pay</button>}
+                  {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Place Order</button>}
                   {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Submitting...</button>}
                 </div>
               </div>
