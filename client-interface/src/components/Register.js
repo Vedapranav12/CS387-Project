@@ -64,13 +64,13 @@ const Register = () => {
   }
 
   return (
-    <Fragment>
+    <Fragment >
       {globalContext.fetchingUser === true ? 'Loading...' :
         <div>
           {
             user.identifyRole === undefined ?
-              <div className="page-register">
 
+              <div className="page-register">
                 <ThemeProvider theme={theme}>
                   <Container component="main" maxWidth="xs">
                     <CssBaseline />
@@ -131,7 +131,7 @@ const Register = () => {
                           name="Contact"
                           label="Contact"
                           type="text"
-                          inputProps={{ Length: 10 }}
+                          inputProps={{ maxLength: 10 }}
                           id="Contact"
                           value={formData.Contact}
                           onChange={(e) => setFormData({ ...formData, Contact: e.target.value })}
@@ -154,7 +154,7 @@ const Register = () => {
                           name="Zip"
                           label="Zip"
                           type="text"
-                          inputProps={{ Length: 6 }}
+                          inputProps={{ maxLength: 6 }}
                           id="Zip"
                           value={formData.Zip}
                           onChange={(e) => setFormData({ ...formData, Zip: e.target.value })}
@@ -173,13 +173,14 @@ const Register = () => {
                     </Box>
                   </Container>
                 </ThemeProvider>
-
               </div>
-              : 'Please Log Out to register'
+              : 'You need to logout to Register'
           }
         </div>
       }
     </Fragment>
+
+
   )
 }
 

@@ -31,6 +31,7 @@ import AddDM from './components/Owner/addDM';
 import AddTM from './components/Owner/addTM';
 import AddWaiter from './components/Owner/addWaiter';
 import AddChef from './components/Owner/addChef';
+import AddDA from './components/Owner/addDA';
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
               <Route path='/vieworder/:tblid' element={<ViewOrder/>}/>
               <Route path='/addcoupon' element={<AddCoupon/>}/>
               <Route path='/adddeliverymanager' element={<AddDM/>}/>
+              <Route path='/adddeliveryagent' element={<AddDA/>}/>
               <Route path='/addtablemanager' element={<AddTM/>}/>
               <Route path='/addwaiter' element={<AddWaiter/>}/>
               <Route path='/addchef' element={<AddChef/>}/>
