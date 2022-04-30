@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalContext from '../providers/GlobalContext';
 import { Link } from 'react-router-dom';
@@ -21,6 +21,7 @@ const axios = require('axios');
 const theme = createTheme();
 const Register = () => {
   const globalContext = useContext(GlobalContext);
+  const user = globalContext.user;
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -63,158 +64,122 @@ const Register = () => {
   }
 
   return (
-    <div className="page-register">
-      <ThemeProvider theme={theme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <AppRegistrationIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Register
-            </Typography>
-            <Box component="form" sx={{ mt: 1 }} onSubmit={submitForm}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="Name"
-                label="Name"
-                type="text"
-                id="name"
-                value={formData.Name}
-                onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="Username"
-                label="Username"
-                name="Username"
-                autoComplete="username"
-                value={formData.Username}
-                onChange={(e) => setFormData({ ...formData, Username: e.target.value })}
-                autoFocus
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={formData.Passcode}
-                onChange={(e) => setFormData({ ...formData, Passcode: e.target.value })}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="Contact"
-                label="Contact"
-                type="text"
-                inputProps={{ Length: 10 }}
-                id="Contact"
-                value={formData.Contact}
-                onChange={(e) => setFormData({ ...formData, Contact: e.target.value })}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="Address"
-                label="Address"
-                type="text"
-                id="Address"
-                value={formData.Address}
-                onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="Zip"
-                label="Zip"
-                type="text"
-                inputProps={{ Length: 6 }}
-                id="Zip"
-                value={formData.Zip}
-                onChange={(e) => setFormData({ ...formData, Zip: e.target.value })}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                margin="normal"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Submit
-              </Button>
-              {error !== null ? <a style={{ color: 'red' }}>{error}</a> : ''}
-            </Box>
-          </Box>
-        </Container>
-      </ThemeProvider>
-      {/* 
-      <h1 className="title">Register</h1>
+    <Fragment>
+      {globalContext.fetchingUser === true ? 'Loading...' :
+        <div>
+          {
+            user.identifyRole === undefined ?
+              <div className="page-register">
 
-      {error && error}
+                <ThemeProvider theme={theme}>
+                  <Container component="main" maxWidth="xs">
+                    <CssBaseline />
+                    <Box
+                      sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <AppRegistrationIcon />
+                      </Avatar>
+                      <Typography component="h1" variant="h5">
+                        Register
+                      </Typography>
+                      <Box component="form" sx={{ mt: 1 }} onSubmit={submitForm}>
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="Name"
+                          label="Name"
+                          type="text"
+                          id="name"
+                          value={formData.Name}
+                          onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          id="Username"
+                          label="Username"
+                          name="Username"
+                          autoComplete="username"
+                          value={formData.Username}
+                          onChange={(e) => setFormData({ ...formData, Username: e.target.value })}
+                          autoFocus
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="password"
+                          label="Password"
+                          type="password"
+                          id="password"
+                          autoComplete="current-password"
+                          value={formData.Passcode}
+                          onChange={(e) => setFormData({ ...formData, Passcode: e.target.value })}
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="Contact"
+                          label="Contact"
+                          type="text"
+                          inputProps={{ Length: 10 }}
+                          id="Contact"
+                          value={formData.Contact}
+                          onChange={(e) => setFormData({ ...formData, Contact: e.target.value })}
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="Address"
+                          label="Address"
+                          type="text"
+                          id="Address"
+                          value={formData.Address}
+                          onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
+                        />
+                        <TextField
+                          margin="normal"
+                          required
+                          fullWidth
+                          name="Zip"
+                          label="Zip"
+                          type="text"
+                          inputProps={{ Length: 6 }}
+                          id="Zip"
+                          value={formData.Zip}
+                          onChange={(e) => setFormData({ ...formData, Zip: e.target.value })}
+                        />
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          margin="normal"
+                          sx={{ mt: 3, mb: 2 }}
+                        >
+                          Submit
+                        </Button>
+                        {error !== null ? <a style={{ color: 'red' }}>{error}</a> : ''}
+                      </Box>
+                    </Box>
+                  </Container>
+                </ThemeProvider>
 
-      <input
-        type="text"
-        name="Name"
-        value={formData.Name}
-        onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
-      />
-
-      <input
-        type="text"
-        name="Username"
-        value={formData.Username}
-        onChange={(e) => setFormData({ ...formData, Username: e.target.value })}
-      />
-
-      <input
-        type="password"
-        name="Passcode"
-        value={formData.Passcode}
-        onChange={(e) => setFormData({ ...formData, Passcode: e.target.value })}
-      />
-
-      <input
-        type="text"
-        name="Contact"
-        value={formData.Contact}
-        onChange={(e) => setFormData({ ...formData, Contact: e.target.value })}
-      />
-
-      <input
-        type="text"
-        name="Address"
-        value={formData.Address}
-        onChange={(e) => setFormData({ ...formData, Address: e.target.value })}
-      />
-
-      <input
-        type="text"
-        name="Zip"
-        value={formData.Zip}
-        onChange={(e) => setFormData({ ...formData, Zip: e.target.value })}
-      />
-
-      <Button text="Register" loading={loading} onClick={submitForm} /> */}
-    </div>
+              </div>
+              : 'Please Log Out to register'
+          }
+        </div>
+      }
+    </Fragment>
   )
 }
 

@@ -7,26 +7,26 @@ const Home = () => {
   const globalContext = useContext(GlobalContext);
   const user = globalContext.user;
 
-  const callerFunction = () => {
-    axios
-      .get(`http://localhost:5000/dummy`, {
-        withCredentials: true,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  // const callerFunction = () => {
+  //   axios
+  //     .get(`http://localhost:5000/dummy`, {
+  //       withCredentials: true,
+  //       headers: {
+  //         'Access-Control-Allow-Origin': '*',
+  //       },
+  //     })
+  //     .then((response) => {
+  //       console.log(response);
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //     });
 
-  }
+  // }
 
-  useEffect(() => {
-    callerFunction();
-  }, []);
+  // useEffect(() => {
+  //   callerFunction();
+  // }, []);
   return (
     <Fragment>
       <div>

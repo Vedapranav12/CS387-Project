@@ -25,9 +25,9 @@ const UpdateProfile = () => {
 
   const getUserDetails = async () => {
     try {
-      // const usrnme=user.Username;
+      const usrnme = user.Username;
       // console.log(usrnme);
-      const usrnme = 'whubbocks0'; //need to change
+      // const usrnme = 'whubbocks0'; //need to change
       const response = await fetch(`http://localhost:5000/get_user_details/${usrnme}`);
       const jsonData = await response.json();
       SetInputs({
@@ -122,71 +122,79 @@ const UpdateProfile = () => {
 
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [user]);
 
   return (
     <Fragment>
-      <div className="demo centerMy">
-        <div className="container text-center">
-          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour">Edit profile</h2>
-          <div className="card shadow-lg p-3 mb-5 bg-white rounded demo2 ChangeTextFont">
-            <form onSubmit={handleSubmit}>
+      {globalContext.fetchingUser === true ? 'Loading...' :
+        <div>
+          {
+            user.identifyRole === 'Customer' ?
+              <div className="demo centerMy">
+                <div className="container text-center">
+                  <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour">Edit profile</h2>
+                  <div className="card shadow-lg p-3 mb-5 bg-white rounded demo2 ChangeTextFont">
+                    <form onSubmit={handleSubmit}>
 
-              <div className="row justify-content-center">
-                <div className="form-group text-left  col-sm-5">
-                  <label>Name
-                    <input className="form-control"
-                      type="text"
-                      name="Name"
-                      value={Inputs.Name}
-                      onChange={e => SetInputs({ ...Inputs, Name: e.target.value })}
-                    />
-                  </label>
-                  <div className="text-danger">{Errors.Name}</div>
-                </div>
-                <div className="form-group text-left  col-sm-5">
-                  <label>Contact Number
-                    <input className="form-control"
-                      type="text"
-                      name="Contact Number"
-                      value={Inputs.Contact}
-                      onChange={e => SetInputs({ ...Inputs, Contact: e.target.value })}
-                    />
-                  </label>
-                  <div className="text-danger">{Errors.Contact}</div>
-                </div>
-                <div className="form-group text-left  col-sm-5">
-                  <label>Address
-                    <input className="form-control"
-                      type="text"
-                      name="Address"
-                      value={Inputs.Address}
-                      onChange={e => SetInputs({ ...Inputs, Address: e.target.value })}
-                    />
-                  </label>
-                  <div className="text-danger">{Errors.Address}</div>
-                </div>
-                <div className="form-group text-left  col-sm-5">
-                  <label>Zip code
-                    <input className="form-control"
-                      type="text"
-                      name="Zip"
-                      value={Inputs.Zip}
-                      onChange={e => SetInputs({ ...Inputs, Zip: e.target.value })}
-                    />
-                  </label>
-                  <div className="text-danger">{Errors.Zip}</div>
-                </div>
+                      <div className="row justify-content-center">
+                        <div className="form-group text-left  col-sm-5">
+                          <label>Name
+                            <input className="form-control"
+                              type="text"
+                              name="Name"
+                              value={Inputs.Name}
+                              onChange={e => SetInputs({ ...Inputs, Name: e.target.value })}
+                            />
+                          </label>
+                          <div className="text-danger">{Errors.Name}</div>
+                        </div>
+                        <div className="form-group text-left  col-sm-5">
+                          <label>Contact Number
+                            <input className="form-control"
+                              type="text"
+                              name="Contact Number"
+                              value={Inputs.Contact}
+                              onChange={e => SetInputs({ ...Inputs, Contact: e.target.value })}
+                            />
+                          </label>
+                          <div className="text-danger">{Errors.Contact}</div>
+                        </div>
+                        <div className="form-group text-left  col-sm-5">
+                          <label>Address
+                            <input className="form-control"
+                              type="text"
+                              name="Address"
+                              value={Inputs.Address}
+                              onChange={e => SetInputs({ ...Inputs, Address: e.target.value })}
+                            />
+                          </label>
+                          <div className="text-danger">{Errors.Address}</div>
+                        </div>
+                        <div className="form-group text-left  col-sm-5">
+                          <label>Zip code
+                            <input className="form-control"
+                              type="text"
+                              name="Zip"
+                              value={Inputs.Zip}
+                              onChange={e => SetInputs({ ...Inputs, Zip: e.target.value })}
+                            />
+                          </label>
+                          <div className="text-danger">{Errors.Zip}</div>
+                        </div>
 
-                <div className="col-sm-6">
-                  {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Submit</button>}
-                  {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Submitting...</button>}
+                        <div className="col-sm-6">
+                          {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Submit</button>}
+                          {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Submitting...</button>}
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
-            </form>
-          </div>
+              : 'Cannot Access this page'
+          }
         </div>
-      </div>
+      }
     </Fragment>
   );
 };
