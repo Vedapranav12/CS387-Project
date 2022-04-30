@@ -1,9 +1,12 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import GlobalContext from "../../providers/GlobalContext";
 import { MDBDataTableV5 } from 'mdbreact';
 import { Button } from "react-bootstrap";
 
 const DeliveryManagerListPersons = () => {
+  const globalContext = useContext(GlobalContext);
+  const user = globalContext.user;
   const navigate = useNavigate();
   const axios = require('axios');
   const params = useParams();
@@ -24,7 +27,7 @@ const DeliveryManagerListPersons = () => {
   };
   const handleUpdate = async (delid, orderid) => {
     axios
-      .post(`http://localhost:5000/assign_delperson`, {delid: delid, ordid: orderid}, {
+      .post(`http://localhost:5000/assign_delperson`, { delid: delid, ordid: orderid }, {
         withCredentials: true,
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -53,51 +56,60 @@ const DeliveryManagerListPersons = () => {
     // }
   };
   useEffect(() => {
-    getDeliveryPersons(pincode);  
+    getDeliveryPersons(pincode);
   }, []);
   return (
     <Fragment >
-      <div className="demo">
-        <br />
+      {globalContext.fetchingUser === true ? 'Loading...' :
         <div>
-            <li>
-                <Link to="/deli_manager">Order List</Link>
-            </li>
-            <li>
-                <Link to="/deli_manager/all_persons">Manage Delivery persons</Link>
-            </li>
-        </div>
-        <div className="container text-center">
-          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Delivery Person List</h2>
-          <div className="row justify-content-center">
-            <div className="col-sm-10">
-            <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-              <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Contact</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listPersons.map(data => (
-                      <tr key={data.username}>
-                        <td>{data.name}</td>
-                        <td>{data.contact}</td>
-                        <td>
-                          <Button onClick={() => handleUpdate(data.username, orderid)}> Start </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+          {
+            user.identifyRole === 'DeliveryManager' ?
 
-            </div>
-          </div>
+              <div className="demo">
+                <br />
+                <div>
+                  <li>
+                    <Link to="/deli_manager">Order List</Link>
+                  </li>
+                  <li>
+                    <Link to="/deli_manager/all_persons">Manage Delivery persons</Link>
+                  </li>
+                </div>
+                <div className="container text-center">
+                  <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Delivery Person List</h2>
+                  <div className="row justify-content-center">
+                    <div className="col-sm-10">
+                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                        <table className="table mt-2 text-left table-condensed table-sm table-striped table-bordered ChangeTextFont">
+                          <thead>
+                            <tr>
+                              <th>Name</th>
+                              <th>Contact</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {listPersons.map(data => (
+                              <tr key={data.username}>
+                                <td>{data.name}</td>
+                                <td>{data.contact}</td>
+                                <td>
+                                  <Button onClick={() => handleUpdate(data.username, orderid)}> Start </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <br />
+              </div>
+              : 'Cannot Access this page'
+          }
         </div>
-        <br />
-      </div>
+      }
     </Fragment>
   )
 };
