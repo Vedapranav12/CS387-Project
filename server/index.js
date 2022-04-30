@@ -108,6 +108,8 @@ app.post('/login', async (req, res) => {
             info = await pool.query("select Username from Delivery_manager where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "DeliveryMan") {
             info = await pool.query("select Username from Delivery_Man where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
+        } else if (identifyRole === "Owner") {
+            info = await pool.query("select Username from owner where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else {
             return res.sendStatus(403);
         }
@@ -249,7 +251,7 @@ app.get("/pend_ords_offl", async (req, res) => {
     }
 });
 
-app.get("/view_ord/:tblid", async(req, res) => {
+app.get("/view_ord/:tblid", async (req, res) => {
     try {
         var tblid = req.params.tblid;
         const CurrentOrder = await pool.query(`select Dish.Name, Table_cart.OrderQuantity from Table_cart, Dish where Table_cart.DishID = Dish.DishID and Table_cart.TableID = $1`, [tblid]);
@@ -515,7 +517,7 @@ app.post("/sub_ingreds_cart", async (req, res) => {
     });
 });
 
-app.post("/checkout_offl", async(req, res) => {
+app.post("/checkout_offl", async (req, res) => {
     const { tableId } = req.body;
     console.log(tableId, req.body);
     pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tableId], (err, results) => {
@@ -631,26 +633,26 @@ app.get("/inventory", async (req,res) => {
   }
 });
 
-app.get("/check_Itemid/:ItemID", async (req,res) => {
-  try{
-    const ItemID=req.params.ItemID;
-    const Inventory = await pool.query("select * from Inventory where ItemID=$1;", [ItemID]);
-    res.json(Inventory.rows);
-  // console.log()
-  } catch(err){
-    console.error(err);
-    return;
-  }
+app.get("/check_Itemid/:ItemID", async (req, res) => {
+    try {
+        const ItemID = req.params.ItemID;
+        const Inventory = await pool.query("select * from Inventory where ItemID=$1;", [ItemID]);
+        res.json(Inventory.rows);
+        // console.log()
+    } catch (err) {
+        console.error(err);
+        return;
+    }
 });
 
-app.post("/add_items", async(req, res) => {
+app.post("/add_items", async (req, res) => {
     const { ItemID, Quantity, date } = req.body;
     pool.query(`update Inventory set Quantity = Quantity+$1 where ItemID=$2;`, [Quantity, ItemID], (err, results) => {
         if (err) {
             console.log(err);
             res.status(400).send({ message: 'Please try again later' });
             return;
-        } 
+        }
     });
     pool.query(`insert into Add_items as ai values($1, $2, $3) ON conflict
   (ItemID, Today) do update set Quantity = ai.Quantity+$3;`, [ItemID, date, Quantity], (err, results) => {
@@ -715,7 +717,7 @@ app.post("/apply_offer", async (req, res) => {
 
 app.post("/hire_chef", async (req, res) => {
     const { usrnme, nme, contact, salary, pass, role } = req.body;
-    pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$5);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
+    pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$6);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -737,9 +739,34 @@ app.post("/hire_waiter", async (req, res) => {
     });
 });
 
-app.post("/hire_delperson", async (req, res) => {
+app.post("/hire_delmanager", async (req, res) => {
     const { usrnme, nme, contact, salary, pass } = req.body;
-    pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+    pool.query(`insert into Delivery_manager values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/hire_tablemanager", async (req, res) => {
+    const { usrnme, nme, contact, salary, pass } = req.body;
+    pool.query(`insert into Table_Manager values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/hire_delperson", async (req, res) => {
+    const { usrnme, nme, contact, salary, pass, zip } = req.body;
+    console.log(req.body.contact);
+    pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$6);`, [usrnme, nme, contact, salary, pass, zip], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -787,6 +814,7 @@ app.post("/fire_delperson", async (req, res) => {
 
 app.post("/add_coupons", async (req, res) => {
     const { expr_date, usr_cat, discount, min_bill, max_discount } = req.body;
+    console.log(expr_date);
     pool.query(`insert into Coupon values($1, $2, $3, $4, $5);`, [expr_date, usr_cat, discount, min_bill, max_discount], (err, results) => {
         if (err) {
             console.log(err)
@@ -819,22 +847,36 @@ app.post("/assign_delperson", async (req, res) => {
 });
 
 app.post("/delivered", async (req, res) => {
-    const { delid, ordid } = req.body;
+    const { delivd, ordid } = req.body;
+    console.log(req.body);
     pool.query(`update Order_info set DeliveryID=NULL, Status='Delivered'
     where OrderID=$1;`, [ordid], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
         } else {
-            res.status(200).json(results.rows);
-        }
-    });
-    pool.query(`update Delivery_Man set Available='Yes' where DeliveryID=$1;`, [delid], (err, results) => {
-        if (err) {
-            console.log(err)
-            res.status(400).send({ message: 'Please try again later' });
-        } else {
-            res.status(200).json(results.rows);
+            // const numorders = await pool.query(`select count(*) from Order_info where Order_info.DeliveryID = $1`,[delid]);
+            // if (numorders.rowCount == 0) {
+            //     pool.query(`update Delivery_Man set Available='Yes' where DeliveryID=$1;`, [delid], (err, results) => {
+            //         if (err) {
+            //             console.log(err)
+            //             res.status(400).send({ message: 'Please try again later' });
+            //         } else {
+            //             res.status(200).json(results.rows);
+            //         }
+            //     });
+            // }
+            // else {
+            //     res.status(200).json(results.rows);
+            // }
+            pool.query(`update Delivery_Man set Available='Yes' where Username=$1;`, [delivd], (err, results) => {
+                if (err) {
+                    console.log(err)
+                    res.status(400).send({ message: 'Please try again later' });
+                } else {
+                    res.status(200).json(results.rows);
+                }
+            });
         }
     });
 });

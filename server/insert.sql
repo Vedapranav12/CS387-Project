@@ -12624,3 +12624,4 @@ insert into Secondary (DeliveryID,Zip) values ('wcastles1d',588943);
 insert into Secondary (DeliveryID,Zip) values ('mwitheford29',493824);
 insert into Secondary (DeliveryID,Zip) values ('rtrubshaw1j',179661);
 insert into Secondary (DeliveryID,Zip) values ('astanfieldl',697597);
+insert into owner (Username, Name, Contact, Passcode) values ('savyasach', 'Savyasach Reddy E', 9876543210, crypt('savyasach', gen_salt('bf')));

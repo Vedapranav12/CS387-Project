@@ -1,9 +1,11 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
-
+import GlobalContext from "../../providers/GlobalContext";
 import { MDBDataTableV5 } from 'mdbreact';
 
 const DeliveryManager = () => {
+  const globalContext = useContext(GlobalContext);
+  const user = globalContext.user;
   const [currentOrders, setcurrentOrders] = useState(null);
   useEffect(() => {
     const getOrders = async () => {
@@ -40,36 +42,36 @@ const DeliveryManager = () => {
         console.log(err.message);
       }
     };
-    getOrders();    
+    getOrders();
   }, []);
   return (
     <Fragment >
-      <div className="demo">
-        <br />
+      {globalContext.fetchingUser === true ? 'Loading...' :
         <div>
-            <li>
-                <Link to="/deli_manager">Order List</Link>
-            </li>
-            <li>
-                <Link to="/deli_manager/all_persons">Manage Delivery persons</Link>
-            </li>
-        </div>
-        <div className="container text-center">
-          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Order List</h2>
-          <div className="row justify-content-center">
-            <div className="col-sm-10">
-              <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
-                <div className="table p-3 text-left table-condensed table-sm table-striped ChangeTextFont">
-                  {currentOrders ? <MDBDataTableV5 hover entriesOptions={[5, 10, 25]} entries={10} searching={false} pagesAmount={4} borderless data={currentOrders} />
-                    : ''
-                  }
+          {
+            user.identifyRole === 'DeliveryManager' ?
+              <div className="demo">
+                <br />
+                <div className="container text-center">
+                  <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > Order List</h2>
+                  <div className="row justify-content-center">
+                    <div className="col-sm-10">
+                      <div className="shadow-lg p-3 mb-5 bg-white rounded border border-dark demo2" >
+                        <div className="table p-3 text-left table-condensed table-sm table-striped ChangeTextFont">
+                          {currentOrders ? <MDBDataTableV5 hover entriesOptions={[5, 10, 25]} entries={10} searching={false} pagesAmount={4} borderless data={currentOrders} />
+                            : ''
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <br />
               </div>
-            </div>
-          </div>
+              : 'Cannot Access this page'
+          }
         </div>
-        <br />
-      </div>
+      }
     </Fragment>
   )
 };

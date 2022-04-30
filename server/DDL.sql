@@ -289,3 +289,11 @@ ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFE
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
 
+CREATE TABLE owner (
+   Username VARCHAR(20) NOT NULL,
+   Name TEXT NOT NULL,
+   Contact CHAR(10) NOT NULL,
+   Passcode TEXT NOT NULL,
+   Primary key(Username)
+);
+

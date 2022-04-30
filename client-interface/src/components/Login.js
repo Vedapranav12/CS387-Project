@@ -51,9 +51,26 @@ const Login = () => {
           globalContext.setUser(response.data.user);
           setError(null);
           if (response.data.user.identifyRole === 'Customer') {
+            navigate('/menu');
+          }
+          else if (response.data.user.identifyRole === 'Chef') {
+            navigate('/chef');
+          }
+          else if (response.data.user.identifyRole === 'DeliveryMan') {
+            navigate('/deli_agent');
+          }
+          else if (response.data.user.identifyRole === 'DeliveryManager') {
+            navigate('/deli_manager');
+          }
+          else if (response.data.user.identifyRole === 'TableManager') {
+            navigate('/tbl_mngr');
+          }
+          else if (response.data.user.identifyRole === 'Owner') {
+            navigate('/addcoupon');
+          }
+          else {
             navigate('/');
           }
-          navigate('/');
         } else {
           throw new Error();
         }
@@ -127,6 +144,7 @@ const Login = () => {
                   <MenuItem value={"TableManager"}>Table Manager</MenuItem>
                   <MenuItem value={"DeliveryManager"}>Delivery Manager</MenuItem>
                   <MenuItem value={"DeliveryMan"}>Delivery Man</MenuItem>
+                  <MenuItem value={"Owner"}>Owner</MenuItem>
                 </Select>
               </FormControl>
               {/* <Badge color={"secondary"} > */}
