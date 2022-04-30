@@ -4,75 +4,137 @@ import { MDBDataTableV5 } from 'mdbreact';
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
 import GlobalContext from '../providers/GlobalContext';
+const axios = require('axios');
 
 const OnlineCheckout = () => {
-    const globalContext = useContext(GlobalContext);
-    const user = globalContext.user;
-    const [Inputs, SetInputs] = useState({
-      Name: 'my name',
-      Contact: '1234567890',
-      Address: 'my addr',
-      Zip: '1234'
-    })
-    const [Errors, SetErrors] = useState({
-      Address: '',
-      Zip: ''
-    })
-    // const [Isvalid, SetIsValid] = useState(false);
-    const [IsPending, setIsPending] = useState(false);
+  const globalContext = useContext(GlobalContext);
+  const user = globalContext.user;
+  const [Inputs, SetInputs] = useState({
+    Name: 'my name',
+    Contact: '1234567890',
+    Address: 'my addr',
+    Zip: '1234'
+  })
+  const [Errors, SetErrors] = useState({
+    Address: '',
+    Zip: ''
+  })
+  // const [Isvalid, SetIsValid] = useState(false);
+  const [IsPending, setIsPending] = useState(false);
 
-    const getUserDetails = async () => {
-        try {
-            // const usrnme=user.Username;
-            // console.log(usrnme);
-            const usrnme = 'whubbocks0'; //need to change
-            const response = await fetch(`http://localhost:5000/get_user_details/${usrnme}`);
-            const jsonData = await response.json();
+  const getUserDetails = async () => {
+    try {
+      const usrnme = user.Username;
+      axios.get(`http://localhost:5000/get_user_details/${usrnme}`, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+        .then((resp) => {
+          if (resp.status === 200) {
             SetInputs({
-              Name:jsonData[0].name,
-              Address:jsonData[0].address,
-              Zip:jsonData[0].zip,
-              Contact:jsonData[0].contact
+              Name: resp.data[0].name,
+              Address: resp.data[0].address,
+              Zip: resp.data[0].zip,
+              Contact: resp.data[0].contact
             })
-          } catch (err) {
-            console.error(err.message);
+          } else {
+            throw new Error();
           }
-    };
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const validate = async () => {
     let input = Inputs;
-    let errors={};
-    let isValid=true;
+    let errors = {};
+    let isValid = true;
 
     try {
       const zip = Inputs.Zip;
+      // Do not use Axios
       const response = await fetch(`http://localhost:5000/check_zip/${zip}`);
       const jsonData = await response.json();
-      if(jsonData.length===0){
-        isValid=false;
-        errors.Zip= "We do not deliver to this location";
+      if (jsonData.length === 0) {
+        isValid = false;
+        errors.Zip = "We do not deliver to this location";
       }
+
+
+      // axios.get(`http://localhost:5000/check_zip/${zip}`, {
+      //   withCredentials: true,
+      //   headers: {
+      //     'Access-Control-Allow-Origin': '*',
+      //   },
+      // })
+      //   .then((resp) => {
+      //     if (resp.status === 200) {
+      //       if (resp.data.length === 0) {
+      //         isValid = false;
+      //         errors.Zip = "We do not deliver to this location";
+      //       }
+      //     } else {
+      //       throw new Error();
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   }).finally(() => {
+
+      //     if (!(input.Address).trim()) {
+      //       isValid = false;
+      //       errors.Address = "Please enter Address";
+      //     }
+
+      //     if (!(input.Zip).trim()) {
+      //       isValid = false;
+      //       errors.Zip = "Please enter Zip code";
+      //     }
+
+      //     if (typeof input.Zip !== "undefined") {
+
+      //       var pattern = new RegExp(/^[0-9\b]+$/);
+      //       if (!pattern.test(input.Zip)) {
+      //         isValid = false;
+      //         errors.Zip = "Please enter only numbers";
+      //       } else if ((input.Zip).length != 6) {
+      //         isValid = false;
+      //         errors.Zip = "length of zip should be 6";
+      //       }
+      //     }
+      //     SetErrors(errors);
+      //     return isValid;
+
+      //   });
+
     } catch (err) {
       console.error(err.message);
-    }    
-
-    if(!(input.Address).trim()){
-      isValid=false;
-      errors.Address= "Please enter Address";
     }
 
-    if(!(input.Zip).trim()) {
+    if (!(input.Address).trim()) {
+      isValid = false;
+      errors.Address = "Please enter Address";
+    }
+
+    if (!(input.Zip).trim()) {
       isValid = false;
       errors.Zip = "Please enter Zip code";
     }
 
-    if(typeof input.Zip !== "undefined") {
-        
+    if (typeof input.Zip !== "undefined") {
+
       var pattern = new RegExp(/^[0-9\b]+$/);
       if (!pattern.test(input.Zip)) {
         isValid = false;
         errors.Zip = "Please enter only numbers";
-      }else if((input.Zip).length != 6){
+      } else if ((input.Zip).length != 6) {
         isValid = false;
         errors.Zip = "length of zip should be 6";
       }
@@ -83,15 +145,15 @@ const OnlineCheckout = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    validate().then(isValid => 
-      {if(isValid){
+    validate().then(isValid => {
+      if (isValid) {
         setIsPending(true);
         // const usrnme = user.Username;
         const usrnme = 'whubbocks0';
-        const Name=Inputs.Name;
-        const Address=Inputs.Address;
-        const Zip=Inputs.Zip;
-        const Contact=Inputs.Contact;
+        const Name = Inputs.Name;
+        const Address = Inputs.Address;
+        const Zip = Inputs.Zip;
+        const Contact = Inputs.Contact;
         fetch('http://localhost:5000/editprofile', {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
@@ -100,14 +162,15 @@ const OnlineCheckout = () => {
           console.log(res);
         })
         setIsPending(false);
-      }});
-}
+      }
+    });
+  }
 
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [user]);
 
-  return(
+  return (
     <Fragment>
       <div className="demo centerMy">
         <div className="container text-center">
@@ -122,7 +185,7 @@ const OnlineCheckout = () => {
                       type="text"
                       name="Address"
                       value={Inputs.Address}
-                      onChange={e => SetInputs( { ...Inputs, Address:e.target.value})}
+                      onChange={e => SetInputs({ ...Inputs, Address: e.target.value })}
                     />
                   </label>
                   <div className="text-danger">{Errors.Address}</div>
@@ -133,12 +196,12 @@ const OnlineCheckout = () => {
                       type="text"
                       name="Zip"
                       value={Inputs.Zip}
-                      onChange={e => SetInputs( { ...Inputs, Zip:e.target.value})}
+                      onChange={e => SetInputs({ ...Inputs, Zip: e.target.value })}
                     />
                   </label>
                   <div className="text-danger">{Errors.Zip}</div>
                 </div>
-                
+
                 <div className="col-sm-6">
                   {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Place Order</button>}
                   {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Submitting...</button>}

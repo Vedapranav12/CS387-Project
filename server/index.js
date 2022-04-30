@@ -153,8 +153,13 @@ app.post('/fetch-user', async (req, res) => {
 
 app.get("/dummy", async (req, res) => {
     // console.log(req);
-    console.log(req.session.user, "Here");
-    res.status(200).send({ message: "Works" });
+    try {
+        console.log(req.session.user, "Here", req.session.user.identifyRole);
+        res.status(200).send({ message: "Works" });
+    }
+    catch (err) {
+        console.error(err);
+    }
     // const playerBasicInfo = await pool.query("select * from cart");
 })
 
@@ -233,7 +238,7 @@ app.get("/pend_ords_offl", async (req, res) => {
 app.get("/view_menu", async (req, res) => {
     try {
         const Menu = await pool.query(`select DishID, Name, price, Non_veg, Category from Dish where Available='Yes' order by Category ASC, Non_Veg DESC;`);
-        res.json(Menu.rows);
+        res.status(200).json(Menu.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -357,11 +362,13 @@ app.get("/get_user_details/:usrnme", async (req, res) => {
 
 app.post("/editprofile/", async (req, res) => {
     const { usrnme, Name, Address, Contact, Zip } = req.body;
-    pool.query("update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1", [usrnme, Name, Address, Contact, Zip], (err, results) => {
+    console.log(usrnme, Name);
+    pool.query(`update Customer set Name = $2, Address=$3, Contact=$4, Zip=$5 where Username = $1;`, [usrnme, Name, Address, Contact, Zip], (err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
             res.status(400).send({ message: 'Please try again later' });
         } else {
+            console.log(results.rows)
             res.status(200).json(results.rows);
         }
     });
@@ -459,10 +466,11 @@ app.get("/user_cart/:usrnme", async (req, res) => {
 });
 
 app.get("/check_zip/:zip", async (req, res) => {
+    // Don't validate escalations
     try {
         var zip = req.params.zip;
         const zips = await pool.query(`select primary_zip from Pincode where primary_zip = $1;`, [zip]);
-        res.json(zips.rows);
+        res.status(200).json(zips.rows);
     } catch (err) {
         console.error(err.message);
     }
@@ -485,7 +493,7 @@ app.post("/sub_ingreds_cart", async (req, res) => {
     });
 });
 
-app.post("/checkout_offl", async(req, res) => {
+app.post("/checkout_offl", async (req, res) => {
     const { tableId } = req.body;
     console.log(tableId, req.body);
     pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tableId], (err, results) => {

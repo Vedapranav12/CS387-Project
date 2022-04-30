@@ -25,11 +25,12 @@ const UpdateProfile = () => {
 
   const getUserDetails = async () => {
     try {
-      // const usrnme=user.Username;
-      // console.log(usrnme);
-      const usrnme = 'whubbocks0'; //need to change
+      const usrnme=user.Username;
+      console.log(usrnme);
+      // const usrnme = 'whubbocks0'; //need to change
       const response = await fetch(`http://localhost:5000/get_user_details/${usrnme}`);
       const jsonData = await response.json();
+      console.log(jsonData);
       SetInputs({
         Name: jsonData[0].name,
         Address: jsonData[0].address,
@@ -122,7 +123,7 @@ const UpdateProfile = () => {
 
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [user]);
 
   return (
     <Fragment>

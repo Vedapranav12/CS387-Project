@@ -4,6 +4,7 @@ import { MDBDataTableV5 } from 'mdbreact';
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
 import GlobalContext from '../providers/GlobalContext';
+const axios = require('axios');
 
 //import './styling.css';
 
@@ -16,14 +17,29 @@ const ListUserCart = () => {
   const getUserCart = async () => {
     try {
       const usrnme = user.Username;
-      const response = await fetch(`http://localhost:5000/user_cart/${usrnme}`);
-      const jsonData = await response.json();
       var total = 0;
-      jsonData.forEach(dish => {
-        total += dish.price * dish.quantity;
-      });
-      setgrandTotal(total);
-      set_cartDetails(jsonData);
+
+      axios.get(`http://localhost:5000/user_cart/${usrnme}`, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+        .then((resp) => {
+          if (resp.status === 200) {
+            resp.data.forEach(dish => {
+              total += dish.price * dish.quantity;
+            });
+            setgrandTotal(total);
+            set_cartDetails(resp.data);
+          } else {
+            throw new Error();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
     } catch (err) {
       console.error(err.message);
     }
@@ -31,7 +47,7 @@ const ListUserCart = () => {
 
   useEffect(() => {
     getUserCart();
-  }, []);
+  }, [user]);
 
   return (
     <Fragment >

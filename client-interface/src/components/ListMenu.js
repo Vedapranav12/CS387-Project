@@ -4,7 +4,7 @@ import { MDBDataTableV5 } from 'mdbreact';
 import { Button } from "react-bootstrap";
 import { useContext } from "react";
 import GlobalContext from '../providers/GlobalContext';
-
+const axios = require('axios');
 //import './styling.css';
 
 const ListMenu = () => {
@@ -26,16 +26,29 @@ const ListMenu = () => {
   const [Vfilter, set_Vfilter] = useState(true);
   const getMenu = async () => {
     try {
-      const response = await fetch("http://localhost:5000/view_menu");
-      const jsonData = await response.json();
-      set_Starters_N(jsonData.filter(menu => (menu.category === "Starters" && menu.non_veg === "Yes")));
-      set_Starters_V(jsonData.filter(menu => (menu.category === "Starters" && menu.non_veg === "No")));
-      set_Main_Course_N(jsonData.filter(menu => (menu.category === "Main Course" && menu.non_veg === "Yes")));
-      set_Main_Course_V(jsonData.filter(menu => (menu.category === "Main Course" && menu.non_veg === "No")));
-      set_Desserts_N(jsonData.filter(menu => (menu.category === "Desserts" && menu.non_veg === "Yes")));
-      set_Desserts_V(jsonData.filter(menu => (menu.category === "Desserts" && menu.non_veg === "No")));
-      set_Beverages_N(jsonData.filter(menu => (menu.category === "Beverages" && menu.non_veg === "Yes")));
-      set_Beverages_V(jsonData.filter(menu => (menu.category === "Beverages" && menu.non_veg === "No")));
+      axios.get('http://localhost:5000/view_menu', {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+        .then((resp) => {
+          if (resp.status === 200) {
+            set_Starters_N(resp.data.filter(menu => (menu.category === "Starters" && menu.non_veg === "Yes")));
+            set_Starters_V(resp.data.filter(menu => (menu.category === "Starters" && menu.non_veg === "No")));
+            set_Main_Course_N(resp.data.filter(menu => (menu.category === "Main Course" && menu.non_veg === "Yes")));
+            set_Main_Course_V(resp.data.filter(menu => (menu.category === "Main Course" && menu.non_veg === "No")));
+            set_Desserts_N(resp.data.filter(menu => (menu.category === "Desserts" && menu.non_veg === "Yes")));
+            set_Desserts_V(resp.data.filter(menu => (menu.category === "Desserts" && menu.non_veg === "No")));
+            set_Beverages_N(resp.data.filter(menu => (menu.category === "Beverages" && menu.non_veg === "Yes")));
+            set_Beverages_V(resp.data.filter(menu => (menu.category === "Beverages" && menu.non_veg === "No")));
+          } else {
+            throw new Error();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (err) {
       console.error(err.message);
     }
@@ -69,15 +82,20 @@ const ListMenu = () => {
     let usrnme = user.Username; //need to change
     let dishid = parseInt(e.target.value);
     let quantity = 1;
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ usrnme, dishid, quantity })
-    };
 
     try {
-      const response = await fetch("http://localhost:5000/insert_cart/", requestOptions);
-      console.log(response);
+      axios.post("http://localhost:5000/insert_cart/", { usrnme, dishid, quantity }, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
     } catch (err) {
       console.error(err.message);
     }
@@ -87,15 +105,20 @@ const ListMenu = () => {
     let usrnme = user.Username; //need to change
     let dishid = parseInt(e.target.value);
     let quantity = 1;
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ usrnme, dishid, quantity })
-    };
 
     try {
-      const response = await fetch("http://localhost:5000/remove_cart/", requestOptions);
-      console.log(response);
+      axios.post("http://localhost:5000/remove_cart/", { usrnme, dishid, quantity }, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
     } catch (err) {
       console.error(err.message);
     }
