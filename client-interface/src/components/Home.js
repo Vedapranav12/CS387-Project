@@ -30,7 +30,6 @@ const Home = () => {
   return (
     <Fragment>
       <div>
-        {user.Username}
       </div>
     </Fragment >
   );

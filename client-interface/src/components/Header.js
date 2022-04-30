@@ -51,27 +51,45 @@ const Header = () => {
     <div>
       <AppBar position="static">
         <Toolbar>
-          {/*Inside the IconButton, we 
-           can render various icons*/}
-          <IconButton
+          {/* <IconButton
             size="large"
             edge="start"
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            {/*This is a simple Menu 
-             Icon wrapped in Icon */}
             <MenuIcon />
-          </IconButton>
-          {/* The Typography component applies 
-           default font weights and sizes */}
+          </IconButton> */}
 
           <Typography variant="h6"
             component="div" sx={{ flexGrow: 1 }}>
             <Link to="/" style={{ color: 'inherit', textDecoration: 'none' }}> Restaurant Management System </Link>
-
           </Typography>
+
+          {user.identifyRole === 'Customer' ? <Button color="inherit" onClick={() => navigate('/menu')}> Menu </Button> : ''}
+          {user.identifyRole === 'Customer' ? <Button color="inherit" onClick={() => navigate('/user_cart')}> Cart </Button> : ''}
+          {user.identifyRole === 'Customer' ? <Button color="inherit" onClick={() => navigate('/online_checkout')}> Checkout </Button> : ''}
+          {user.identifyRole === 'Customer' ? <Button color="inherit" onClick={() => navigate('/user_history')}> History </Button> : ''}
+          {user.identifyRole === 'Customer' ? <Button color="inherit" onClick={() => navigate('/update_profile')}> Update </Button> : ''}
+
+          {user.identifyRole === 'Chef' ? <Button color="inherit" onClick={() => navigate('/chef')}> Orders </Button> : ''}
+          {user.identifyRole === 'Chef' && user.Role === 'head' ? <Button color="inherit" onClick={() => navigate('/list_inventory')}> Inventory </Button> : ''}
+          {user.identifyRole === 'Chef' && user.Role === 'head' ? <Button color="inherit" onClick={() => navigate('/inventory_form')}> Add Ingredients </Button> : ''}
+
+          {user.identifyRole === 'DeliveryMan' ? <Button color="inherit" onClick={() => navigate('/deli_agent')}> Delivery List </Button> : ''}
+
+          {user.identifyRole === 'DeliveryManager' ? <Button color="inherit" onClick={() => navigate('/deli_manager')}> Order List </Button> : ''}
+          {user.identifyRole === 'DeliveryManager' ? <Button color="inherit" onClick={() => navigate('/deli_manager/all_persons')}> People </Button> : ''}
+
+          {user.identifyRole === 'TableManager' ? <Button color="inherit" onClick={() => navigate('/tbl_mngr')}> People </Button> : ''}
+
+          {user.identifyRole === 'Owner' ? <Button color="inherit" onClick={() => navigate('/addcoupon')}> Coupons </Button> : ''}
+          {user.identifyRole === 'Owner' ? <Button color="inherit" onClick={() => navigate('/adddeliverymanager')}> DeliveryM </Button> : ''}
+          {user.identifyRole === 'Owner' ? <Button color="inherit" onClick={() => navigate('/adddeliveryagent')}> Agent </Button> : ''}
+          {user.identifyRole === 'Owner' ? <Button color="inherit" onClick={() => navigate('/addtablemanager')}> TableM </Button> : ''}
+          {user.identifyRole === 'Owner' ? <Button color="inherit" onClick={() => navigate('/addwaiter')}> Waiter </Button> : ''}
+          {user.identifyRole === 'Owner' ? <Button color="inherit" onClick={() => navigate('/addchef')}> Chefs </Button> : ''}
+
           <Card color="inherit" sx={{ mx: 10 }} style={{ variant: "contained", border: "10px", boxShadow: "none", padding: "10px", borderRadius: 3 }}>
             <Typography>
               {user.Username ? ` Logged in as ${user.Username}, ${user.identifyRole} ` : ' Not logged in '}

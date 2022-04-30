@@ -57,13 +57,13 @@ function App() {
               <Route path="/update_profile" element={<UpdateProfile />} />
               <Route path="/list_inventory" element={<ListInventory />} />
               <Route path="/inventory_form" element={<InventoryForm />} />
-              <Route path='/vieworder/:tblid' element={<ViewOrder/>}/>
-              <Route path='/addcoupon' element={<AddCoupon/>}/>
-              <Route path='/adddeliverymanager' element={<AddDM/>}/>
-              <Route path='/adddeliveryagent' element={<AddDA/>}/>
-              <Route path='/addtablemanager' element={<AddTM/>}/>
-              <Route path='/addwaiter' element={<AddWaiter/>}/>
-              <Route path='/addchef' element={<AddChef/>}/>
+              <Route path='/vieworder/:tblid' element={<ViewOrder />} />
+              <Route path='/addcoupon' element={<AddCoupon />} />
+              <Route path='/adddeliverymanager' element={<AddDM />} />
+              <Route path='/adddeliveryagent' element={<AddDA />} />
+              <Route path='/addtablemanager' element={<AddTM />} />
+              <Route path='/addwaiter' element={<AddWaiter />} />
+              <Route path='/addchef' element={<AddChef />} />
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}
             </Routes>

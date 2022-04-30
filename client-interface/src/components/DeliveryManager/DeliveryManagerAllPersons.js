@@ -54,14 +54,6 @@ const DeliveryManagerAllPersons = () => {
             user.identifyRole === 'DeliveryManager' ?
               <div className="demo">
                 <br />
-                <div>
-                  <li>
-                    <Link to="/deli_manager">Order List</Link>
-                  </li>
-                  <li>
-                    <Link to="/deli_manager/all_persons">Manage Delivery persons</Link>
-                  </li>
-                </div>
                 <div className="container text-center">
                   <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour" > All delivery persons</h2>
                   <div className="row justify-content-center">
