@@ -124,7 +124,7 @@ const Register = () => {
                 name="Contact"
                 label="Contact"
                 type="text"
-                inputProps={{ maxLength: 10 }}
+                inputProps={{ Length: 10 }}
                 id="Contact"
                 value={formData.Contact}
                 onChange={(e) => setFormData({ ...formData, Contact: e.target.value })}
@@ -147,7 +147,7 @@ const Register = () => {
                 name="Zip"
                 label="Zip"
                 type="text"
-                inputProps={{ maxLength: 6 }}
+                inputProps={{ Length: 6 }}
                 id="Zip"
                 value={formData.Zip}
                 onChange={(e) => setFormData({ ...formData, Zip: e.target.value })}

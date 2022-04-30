@@ -639,7 +639,7 @@ app.post("/apply_offer", async (req, res) => {
 
 app.post("/hire_chef", async (req, res) => {
     const { usrnme, nme, contact, salary, pass, role } = req.body;
-    pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$5);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
+    pool.query(`insert into Chef values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$6);`, [usrnme, nme, contact, salary, pass, role], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -652,6 +652,30 @@ app.post("/hire_chef", async (req, res) => {
 app.post("/hire_waiter", async (req, res) => {
     const { usrnme, nme, contact, salary, pass } = req.body;
     pool.query(`insert into Waiter values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/hire_delmanager", async (req, res) => {
+    const { usrnme, nme, contact, salary, pass } = req.body;
+    pool.query(`insert into Delivery_manager values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+        if (err) {
+            console.log(err)
+            res.status(400).send({ message: 'Please try again later' });
+        } else {
+            res.status(200).json(results.rows);
+        }
+    });
+});
+
+app.post("/hire_tablemanager", async (req, res) => {
+    const { usrnme, nme, contact, salary, pass } = req.body;
+    pool.query(`insert into Table_Manager values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
@@ -711,6 +735,7 @@ app.post("/fire_delperson", async (req, res) => {
 
 app.post("/add_coupons", async (req, res) => {
     const { expr_date, usr_cat, discount, min_bill, max_discount } = req.body;
+    console.log(expr_date);
     pool.query(`insert into Coupon values($1, $2, $3, $4, $5);`, [expr_date, usr_cat, discount, min_bill, max_discount], (err, results) => {
         if (err) {
             console.log(err)

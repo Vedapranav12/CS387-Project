@@ -24,6 +24,12 @@ import DeliveryAgent from './components/DeliveryAgent/deliveryAgent';
 import TableManager from './components/TableManager/TableManager';
 import Chef from './components/Chef/Chef';
 import ViewOrder from './components/TableManager/ViewOrder';
+import AddCoupon from './components/Owner/addCoupon';
+import AddDM from './components/Owner/addDM';
+import AddTM from './components/Owner/addTM';
+import AddWaiter from './components/Owner/addWaiter';
+import AddChef from './components/Owner/addChef';
+
 function App() {
   return (
     <div>
@@ -47,6 +53,11 @@ function App() {
               <Route path="/user_history" element={<ListUserOrders />} />
               <Route path="/update_profile" element={<UpdateProfile />} />
               <Route path='/vieworder/:tblid' element={<ViewOrder/>}/>
+              <Route path='/addcoupon' element={<AddCoupon/>}/>
+              <Route path='/adddeliverymanager' element={<AddDM/>}/>
+              <Route path='/addtablemanager' element={<AddTM/>}/>
+              <Route path='/addwaiter' element={<AddWaiter/>}/>
+              <Route path='/addchef' element={<AddChef/>}/>
               {/* <Route path="/deli_manager" element={<DeliveryManager />} />
           <Route path="/deli_manager/:pincode" element={<DeliveryManagerListPersons />} /> */}
             </Routes>
