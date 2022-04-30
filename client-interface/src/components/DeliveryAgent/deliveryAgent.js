@@ -7,49 +7,71 @@ import GlobalContext from '../../providers/GlobalContext';
 //import './styling.css';
 
 const DeliveryAgent = () => {
+    const axios = require('axios'); 
     const globalContext = useContext(GlobalContext);
     const user = globalContext.user;
     const delid = 0;
     console.log(user.Username);
     const [listOrders, setlistOrders] = useState([]);
-    const handleUpdate = async (delid, orderid) => {
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ delid, orderid })
-      };
+    const getList = async () => {
       try {
-        const response = await fetch("http://localhost:5000/delivered/", requestOptions);
-        console.log(response);
+        const response = await fetch(`http://localhost:5000/order_for_delivery/${user.Username}`);
+        const jsonData = await response.json();
+        console.log("hi");
+        console.log(jsonData);
+        const uniqueorders = Array.from(new Set(jsonData.map((item) => item["orderid"])));
+          console.log(uniqueorders);
+          const orderdata = uniqueorders.map((orderid) => {
+            const currentOrderData = jsonData.filter((item) => item["orderid"] === orderid);
+            return ({
+                "orderid": orderid,
+                "orderdata": currentOrderData.map((area) => {
+                    return ({
+                      "name": area.name,
+                      "quantity": area.quantity
+                    });
+                })
+            });
+        });
+        setlistOrders(orderdata);
       } catch (err) {
-        console.log(err.message);
+        console.error(err.message);
       }
     };
-  const getList = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/order_for_delivery/${user.Username}`);
-      const jsonData = await response.json();
+    const handleUpdate = async (delid, orderid) => {
       console.log("hi");
-      console.log(jsonData);
-      const uniqueorders = Array.from(new Set(jsonData.map((item) => item["orderid"])));
-        console.log(uniqueorders);
-        const orderdata = uniqueorders.map((orderid) => {
-          const currentOrderData = jsonData.filter((item) => item["orderid"] === orderid);
-          return ({
-              "orderid": orderid,
-              "orderdata": currentOrderData.map((area) => {
-                  return ({
-                    "name": area.name,
-                    "quantity": area.quantity
-                  });
-              })
-          });
-      });
-      setlistOrders(orderdata);
-    } catch (err) {
-      console.error(err.message);
-    }
-  };
+      console.log(delid);
+      axios
+        .post(`http://localhost:5000/delivered`, {delivd: delid, ordid: orderid}, {
+          withCredentials: true,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+          },
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("osad")
+            getList();
+          } else {
+            console.log("Hdsassadi");
+            throw new Error();
+          }
+        })
+        .catch((error) => {
+          console.error(error.message)
+        })
+      // const requestOptions = {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ delid, orderid })
+      // };
+      // try {
+      //   const response = await fetch("http://localhost:5000/delivered/", requestOptions);
+      //   console.log(response);
+      // } catch (err) {
+      //   console.log(err.message);
+      // }
+    };
 
   useEffect(() => {
     getList();
@@ -95,7 +117,7 @@ const DeliveryAgent = () => {
                           </tbody>
                         </table>
                         <td>
-                          <Button onClick={handleUpdate} value={[user.Username, data.orderid]}> Delivered </Button>
+                          <Button onClick={() => handleUpdate(user.Username, data.orderid)} > Delivered </Button>
                         </td>
                       </tr>
                     ))}

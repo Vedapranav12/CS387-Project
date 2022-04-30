@@ -5,36 +5,54 @@ import { Button } from "react-bootstrap";
 
 const DeliveryManagerListPersons = () => {
   const navigate = useNavigate();
+  const axios = require('axios');
   const params = useParams();
   const pincode = params.pincode;
   const orderid = params.orderid;
   const [listPersons, setlistPersons] = useState([]);
-  const handleUpdate = async (delid, orderid) => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ delid, orderid })
-    };
+  const getDeliveryPersons = async pincode => {
     try {
-      const response = await fetch("http://localhost:5000/assign_delperson/", requestOptions);
-      console.log(response);
-    } catch (err) {
+      const response = await fetch(`http://localhost:5000/del_ppl/${pincode}`);
+      const jsonData = await response.json();
+      console.log(jsonData);
+      setlistPersons(jsonData);
+
+    }
+    catch (err) {
       console.log(err.message);
     }
   };
+  const handleUpdate = async (delid, orderid) => {
+    axios
+      .post(`http://localhost:5000/assign_delperson`, {delid: delid, ordid: orderid}, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getDeliveryPersons(pincode);
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    // const requestOptions = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ delid, orderid })
+    // };
+    // try {
+    //   const response = await fetch("http://localhost:5000/assign_delperson/", requestOptions);
+    //   console.log(response);
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
+  };
   useEffect(() => {
-    const getDeliveryPersons = async pincode => {
-      try {
-        const response = await fetch(`http://localhost:5000/del_ppl/${pincode}`);
-        const jsonData = await response.json();
-        console.log(jsonData);
-        setlistPersons(jsonData);
-
-      }
-      catch (err) {
-        console.log(err.message);
-      }
-    };
     getDeliveryPersons(pincode);  
   }, []);
   return (
@@ -67,7 +85,7 @@ const DeliveryManagerListPersons = () => {
                         <td>{data.name}</td>
                         <td>{data.contact}</td>
                         <td>
-                          <Button onClick={handleUpdate} value={[data.username, orderid]}> Start </Button>
+                          <Button onClick={() => handleUpdate(data.username, orderid)}> Start </Button>
                         </td>
                       </tr>
                     ))}

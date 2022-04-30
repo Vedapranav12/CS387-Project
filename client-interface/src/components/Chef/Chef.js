@@ -3,73 +3,108 @@ import { Button } from "react-bootstrap";
 import { MDBDataTableV5 } from 'mdbreact';
 
 const Chef = () => {
+  const axios = require('axios');
   const [OrderListOnline, setOrderListOnline] = useState([]);
   const [OrderListOffline, setOrderListOffline] = useState([]);
-  const handleUpdateOnline = async orderid => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ orderid })
-    };
+  const getList = async () => {
     try {
-      const response = await fetch("http://localhost:5000/onl_ords_update/", requestOptions);
-      console.log(response);
-    } catch (err) {
+      const response = await fetch("http://localhost:5000/pend_ords_onl");
+      const jsonData = await response.json();
+      console.log(jsonData);
+      const uniqueorders = Array.from(new Set(jsonData.map((item) => item["orderid"])));
+      console.log(uniqueorders);
+      const orderdata = uniqueorders.map((orderid) => {
+        const currentOrderData = jsonData.filter((item) => item["orderid"] === orderid);
+        return ({
+            "orderid": orderid,
+            "orderdata": currentOrderData.map((area) => {
+                return ({
+                  "dishid": area.dishid,
+                  "quantity": area.quantity
+                });
+            })
+        });
+    });
+    console.log(orderdata);
+    setOrderListOnline(orderdata);
+    }
+    catch (err) {
       console.log(err.message);
     }
+    try{
+      const response2 = await fetch("http://localhost:5000/pend_ords_offl");
+      const jsonData2 = await response2.json();
+      console.log(jsonData2);
+      setOrderListOffline(jsonData2);
+
+    }
+    catch (err) {
+      console.log(err.message);
+    }
+  };
+  const handleUpdateOnline = async orderid => {
+    axios
+      .post(`http://localhost:5000/onl_ords_update`, {ord : orderid}, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getList();
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    // const requestOptions = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ orderid })
+    // };
+    // try {
+    //   const response = await fetch("http://localhost:5000/onl_ords_update/", requestOptions);
+    //   console.log(response);
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
   };
 
   const handleUpdateOffline = async (tblid, dishid) => {
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tblid, dishid })
-    };
-    try {
-      const response = await fetch("http://localhost:5000/offl_ords_update/", requestOptions);
-      console.log(response);
-    } catch (err) {
-      console.log(err.message);
-    }
+    axios
+      .post(`http://localhost:5000/offl_ords_update`, {tblid: tblid, dishid: dishid}, {
+        withCredentials: true,
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+        },
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          getList();
+        } else {
+          throw new Error();
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+    // const requestOptions = {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ tblid, dishid })
+    // };
+    // try {
+    //   const response = await fetch("http://localhost:5000/offl_ords_update/", requestOptions);
+    //   console.log(response);
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
   };
   
   useEffect(() => {
-    const getList = async () => {
-      try {
-        const response = await fetch("http://localhost:5000/pend_ords_onl");
-        const jsonData = await response.json();
-        console.log(jsonData);
-        const uniqueorders = Array.from(new Set(jsonData.map((item) => item["orderid"])));
-        console.log(uniqueorders);
-        const orderdata = uniqueorders.map((orderid) => {
-          const currentOrderData = jsonData.filter((item) => item["orderid"] === orderid);
-          return ({
-              "orderid": orderid,
-              "orderdata": currentOrderData.map((area) => {
-                  return ({
-                    "dishid": area.dishid,
-                    "quantity": area.quantity
-                  });
-              })
-          });
-      });
-      console.log(orderdata);
-      setOrderListOnline(orderdata);
-      }
-      catch (err) {
-        console.log(err.message);
-      }
-      try{
-        const response2 = await fetch("http://localhost:5000/pend_ords_offl");
-        const jsonData2 = await response2.json();
-        console.log(jsonData2);
-        setOrderListOffline(jsonData2);
-
-      }
-      catch (err) {
-        console.log(err.message);
-      }
-    };
     getList();    
   }, []);
   return (
@@ -94,7 +129,7 @@ const Chef = () => {
                         <td>{data.dishid}</td>
                         <td>{data.quantity}</td>
                         <td>
-                          <Button onClick={handleUpdateOffline} value={[data.tableid,data.dishid]}> Start </Button>
+                          <Button onClick={() => handleUpdateOffline(data.tableid, data.dishid)}> Start </Button>
                         </td>
                       </tr>
                     ))}
@@ -140,7 +175,7 @@ const Chef = () => {
                           </tbody>
                         </table>
                         <td>
-                          <Button onClick={handleUpdateOnline} value={data.orderid}> Start </Button>
+                          <Button onClick={() => handleUpdateOnline(data.orderid)}> Start </Button>
                         </td>
                       </tr>
                     ))}

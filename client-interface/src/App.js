@@ -23,6 +23,8 @@ import DeliveryManagerAllPersons from './components/DeliveryManager/DeliveryMana
 import DeliveryAgent from './components/DeliveryAgent/deliveryAgent';
 import TableManager from './components/TableManager/TableManager';
 import Chef from './components/Chef/Chef';
+import ListInventory from './components/Chef/ListInventory';
+import InventoryForm from './components/Chef/InventoryForm';
 import ViewOrder from './components/TableManager/ViewOrder';
 import AddCoupon from './components/Owner/addCoupon';
 import AddDM from './components/Owner/addDM';
@@ -52,6 +54,8 @@ function App() {
               <Route path="/online_checkout" element={<OnlineCheckout />} />
               <Route path="/user_history" element={<ListUserOrders />} />
               <Route path="/update_profile" element={<UpdateProfile />} />
+              <Route path="/list_inventory" element={<ListInventory />} />
+              <Route path="/inventory_form" element={<InventoryForm />} />
               <Route path='/vieworder/:tblid' element={<ViewOrder/>}/>
               <Route path='/addcoupon' element={<AddCoupon/>}/>
               <Route path='/adddeliverymanager' element={<AddDM/>}/>
