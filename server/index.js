@@ -447,7 +447,7 @@ app.post("/sub_ingreds_tbl_cart", async (req, res) => {
             res.status(400).send({ message: 'Please try again later' });
             return;
         } else {
-            
+
         }
     });
 });
@@ -559,7 +559,7 @@ app.post("/ins_ord", async (req, res) => {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
         } else {
-          pool.query(`with consumed as (select ing.ItemID,
+            pool.query(`with consumed as (select ing.ItemID,
             sum(tc.Quantity*ing.Quantity) as quantity from Cart as tc inner join
             Ingredients as ing on tc.DishID=ing.DishID where tc.Quantity>0 and
             tc.CustomerID=$1 group by (ing.ItemID) ) update Inventory as I
@@ -613,24 +613,24 @@ app.post("/offl_ords_update", async (req, res) => {
     });
 });
 
-app.get("/get_add_items", async (req,res) => {
-  try{
-  const Inventory = await pool.query("select * from Add_Items order by ItemID ASC, Today ASC;");
-  res.json(Inventory.rows);
-  // console.log()
-  } catch(err){
-    console.error(err);
-  }
+app.get("/get_add_items", async (req, res) => {
+    try {
+        const Inventory = await pool.query("select * from Add_Items order by ItemID ASC, Today ASC;");
+        res.json(Inventory.rows);
+        // console.log()
+    } catch (err) {
+        console.error(err);
+    }
 });
 
-app.get("/inventory", async (req,res) => {
-  try{
-  const Inventory = await pool.query("select * from Inventory order by ItemID ASC;");
-  res.json(Inventory.rows);
-  // console.log()
-  } catch(err){
-    console.error(err);
-  }
+app.get("/inventory", async (req, res) => {
+    try {
+        const Inventory = await pool.query("select * from Inventory order by ItemID ASC;");
+        res.json(Inventory.rows);
+        // console.log()
+    } catch (err) {
+        console.error(err);
+    }
 });
 
 app.get("/check_Itemid/:ItemID", async (req, res) => {

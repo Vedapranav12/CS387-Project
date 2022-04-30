@@ -116,9 +116,9 @@ const OnlineCheckout = () => {
         const Zip = Inputs.Zip;
         const Contact = Inputs.Contact;
         var currentdate = new Date();
-        var timestamp = currentdate.getDate() + "-"
+        var timestamp = currentdate.getFullYear() + "-"
           + (currentdate.getMonth() + 1) + "-"
-          + currentdate.getFullYear() + " "
+          + currentdate.getDate() + " "
           + currentdate.getHours() + ":"
           + currentdate.getMinutes() + ":"
           + currentdate.getSeconds();
