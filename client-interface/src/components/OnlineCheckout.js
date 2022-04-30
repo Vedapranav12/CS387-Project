@@ -72,7 +72,7 @@ const OnlineCheckout = () => {
       if (!pattern.test(input.Zip)) {
         isValid = false;
         errors.Zip = "Please enter only numbers";
-      } else if ((input.Zip).length != 6) {
+      } else if ((input.Zip).length !== 6) {
         isValid = false;
         errors.Zip = "length of zip should be 6";
       }

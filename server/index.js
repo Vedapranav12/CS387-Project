@@ -108,6 +108,8 @@ app.post('/login', async (req, res) => {
             info = await pool.query("select Username from Delivery_manager where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else if (identifyRole === "DeliveryMan") {
             info = await pool.query("select Username from Delivery_Man where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
+        } else if (identifyRole === "Owner") {
+            info = await pool.query("select Username from owner where Username=$1 and Passcode=crypt($2, Passcode);", [Username, Passcode]);
         } else {
             return res.sendStatus(403);
         }
@@ -231,7 +233,7 @@ app.get("/pend_ords_offl", async (req, res) => {
     }
 });
 
-app.get("/view_ord/:tblid", async(req, res) => {
+app.get("/view_ord/:tblid", async (req, res) => {
     try {
         var tblid = req.params.tblid;
         const CurrentOrder = await pool.query(`select Dish.Name, Table_cart.OrderQuantity from Table_cart, Dish where Table_cart.DishID = Dish.DishID and Table_cart.TableID = $1`, [tblid]);
@@ -496,7 +498,7 @@ app.post("/sub_ingreds_cart", async (req, res) => {
     });
 });
 
-app.post("/checkout_offl", async(req, res) => {
+app.post("/checkout_offl", async (req, res) => {
     const { tableId } = req.body;
     console.log(tableId, req.body);
     pool.query(`update Table_info set Status = 'Free' where TableID=$1;`, [tableId], (err, results) => {
@@ -568,36 +570,36 @@ app.post("/offl_ords_update", async (req, res) => {
     });
 });
 
-app.get("/inventory", async (req,res) => {
-  try{
-  const Inventory = await pool.query("select * from Inventory order by ItemID ASC;");
-  res.json(Inventory.rows);
-  // console.log()
-  } catch(err){
-    console.error(err);
-  }
+app.get("/inventory", async (req, res) => {
+    try {
+        const Inventory = await pool.query("select * from Inventory order by ItemID ASC;");
+        res.json(Inventory.rows);
+        // console.log()
+    } catch (err) {
+        console.error(err);
+    }
 });
 
-app.get("/check_Itemid/:ItemID", async (req,res) => {
-  try{
-    const ItemID=req.params.ItemID;
-    const Inventory = await pool.query("select * from Inventory where ItemID=$1;", [ItemID]);
-    res.json(Inventory.rows);
-  // console.log()
-  } catch(err){
-    console.error(err);
-    return;
-  }
+app.get("/check_Itemid/:ItemID", async (req, res) => {
+    try {
+        const ItemID = req.params.ItemID;
+        const Inventory = await pool.query("select * from Inventory where ItemID=$1;", [ItemID]);
+        res.json(Inventory.rows);
+        // console.log()
+    } catch (err) {
+        console.error(err);
+        return;
+    }
 });
 
-app.post("/add_items", async(req, res) => {
+app.post("/add_items", async (req, res) => {
     const { ItemID, Quantity, date } = req.body;
     pool.query(`update Inventory set Quantity = Quantity+$1 where ItemID=$2;`, [Quantity, ItemID], (err, results) => {
         if (err) {
             console.log(err);
             res.status(400).send({ message: 'Please try again later' });
             return;
-        } 
+        }
     });
     pool.query(`insert into Add_items as ai values($1, $2, $3) ON conflict
   (ItemID, Today) do update set Quantity = ai.Quantity+$3;`, [ItemID, date, Quantity], (err, results) => {

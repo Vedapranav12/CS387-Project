@@ -127,6 +127,7 @@ const Login = () => {
                   <MenuItem value={"TableManager"}>Table Manager</MenuItem>
                   <MenuItem value={"DeliveryManager"}>Delivery Manager</MenuItem>
                   <MenuItem value={"DeliveryMan"}>Delivery Man</MenuItem>
+                  <MenuItem value={"Owner"}>Owner</MenuItem>
                 </Select>
               </FormControl>
               {/* <Badge color={"secondary"} > */}

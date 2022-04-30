@@ -101,13 +101,13 @@ const TableManager = () => {
                                   <td>{data.tableid}</td>
                                   <td>{data.status}</td>
                                   <td>
-                                    <Button disabled={data.status == 'Free'} onClick={handleFree} value={data.tableid}> Free Table </Button>
+                                    <Button disabled={data.status === 'Free'} onClick={handleFree} value={data.tableid}> Free Table </Button>
                                   </td>
                                   <td>
-                                    <Button disabled={data.status == 'Not free'} onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
+                                    <Button disabled={data.status === 'Not free'} onClick={handleOccupy} value={data.tableid}> Occupy Table </Button>
                                   </td>
                                   <td>
-                                    <Button disabled={data.status == 'Free'} onClick={ViewOrder} value={data.tableid}> View Order </Button>
+                                    <Button disabled={data.status === 'Free'} onClick={ViewOrder} value={data.tableid}> View Order </Button>
                                   </td>
                                 </tr>
                               ))}
