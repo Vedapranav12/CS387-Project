@@ -51,7 +51,7 @@ const Login = () => {
           globalContext.setUser(response.data.user);
           setError(null);
           if (response.data.user.identifyRole === 'Customer') {
-            navigate('/');
+            navigate('/menu');
           }
           else if (response.data.user.identifyRole === 'Chef') {
             navigate('/chef');
