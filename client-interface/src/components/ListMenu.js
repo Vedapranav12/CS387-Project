@@ -441,7 +441,7 @@ const ListMenu = () => {
               </div> :''} */}
                     </div>
                   </div>
-                  <Link to="/user_cart"> <button type="button"> GO to Cart </button> </Link>
+                  <Link to="/user_cart"> <button type="button" className="btn btn-primary btn-lg btn-block"> GO to Cart </button> </Link>
                 </div>
                 <br />
               </div>

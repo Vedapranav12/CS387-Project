@@ -25,9 +25,8 @@ const UpdateProfile = () => {
 
   const getUserDetails = async () => {
     try {
-      // const usrnme=user.Username;
-      // console.log(usrnme);
-      const usrnme = 'whubbocks0'; //need to change
+      const usrnme=user.Username;
+      // const usrnme = 'whubbocks0'; //need to change
       const response = await fetch(`http://localhost:5000/get_user_details/${usrnme}`);
       const jsonData = await response.json();
       SetInputs({
@@ -114,15 +113,11 @@ const UpdateProfile = () => {
       })
       setIsPending(false);
     }
-    // setName("");
-    // set("");
-    // setcountry_name("");
-    // setcapacity("");
   }
 
   useEffect(() => {
     getUserDetails();
-  }, []);
+  }, [user]);
 
   return (
     <Fragment>

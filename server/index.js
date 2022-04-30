@@ -186,6 +186,24 @@ app.get("/insuff_ing_off/:tbl_id", async (req, res) => {
     }
 });
 
+// app.post("/online_order/", async (req, res) = {
+//   const {usrnme} = req.body;
+//   pool.query(`select inv.ItemID,
+//   inv.Quantity-sum(c.Quantity*ing.Quantity) as quantity from Cart as c inner
+//   join Ingredients as ing on c.DishID=ing.DishID inner join Inventory as
+//   inv on ing.ItemID=inv.ItemID where c.Quantity>0 and c.CustomerID=$1
+//   group by (inv.ItemID,inv.Quantity) having
+//   inv.Quantity-sum(c.Quantity*ing.Quantity)<0;`, [id], (err, results) => {
+//       if (err) {
+//           console.log(err)
+//           res.status(400).send({ message: 'Unable to check inventory' });
+//           return;
+//       } else {
+//           if(results.length>0)
+//       }
+//   });
+// });
+
 app.get("/insuff_ing_onl/:usernme", async (req, res) => {
     try {
         var id = req.params.usernme;
@@ -425,8 +443,9 @@ app.post("/sub_ingreds_tbl_cart", async (req, res) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
+            return;
         } else {
-            res.status(200).json(results.rows);
+            
         }
     });
 });
@@ -531,16 +550,40 @@ app.post("/set_addr", async (req, res) => {
 
 app.post("/ins_ord", async (req, res) => {
     const { usrnme, timestamp } = req.body;
-    pool.query(`insert into Order_info values(NULL, $1,'Received',
+    console.log(req.body);
+    pool.query(`insert into Order_info(DeliveryID, CustomerID, Mode, Status, Time) values(NULL, $1,'Online','Received',
     $2);`, [usrnme, timestamp], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
         } else {
+          pool.query(`with consumed as (select ing.ItemID,
+            sum(tc.Quantity*ing.Quantity) as quantity from Cart as tc inner join
+            Ingredients as ing on tc.DishID=ing.DishID where tc.Quantity>0 and
+            tc.CustomerID=$1 group by (ing.ItemID) ) update Inventory as I
+            SET Quantity = I.Quantity - C.quantity FROM consumed as C where
+            I.ItemID=C.ItemID;`, [usrnme])
+            pool.query(`insert into order_items select orderid, c.dishid, c.quantity from order_info as o inner join cart as c on o.customerid=c.customerid where c.customerid=$1 and Time=$2;`, [usrnme, timestamp]);
+            pool.query(`delete from cart where customerid=$1;`, [usrnme]);
             res.status(200).json(results.rows);
         }
     });
 });
+
+
+
+// app.post("/ins_order_items", async (req, res) => {
+//   const { usrnme, orderid } = req.body;
+//   console.log(req.body);
+//   pool.query(, [usrnme, orderid], (err, results) => {
+//       if (err) {
+//           console.log(err)
+//           res.status(400).send({ message: 'Please try again later' });
+//       } else {
+//           res.status(200).json(results.rows);
+//       }
+//   });
+// });
 
 app.post("/onl_ords_update", async (req, res) => {
     const { ord } = req.body;
@@ -566,6 +609,16 @@ app.post("/offl_ords_update", async (req, res) => {
             res.status(200).json(results.rows);
         }
     });
+});
+
+app.get("/get_add_items", async (req,res) => {
+  try{
+  const Inventory = await pool.query("select * from Add_Items order by ItemID ASC, Today ASC;");
+  res.json(Inventory.rows);
+  // console.log()
+  } catch(err){
+    console.error(err);
+  }
 });
 
 app.get("/inventory", async (req,res) => {

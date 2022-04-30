@@ -12,12 +12,16 @@ const ListUserCart = () => {
   const user = globalContext.user;
   const [cartDetails, set_cartDetails] = useState([]);
   const [grandTotal, setgrandTotal] = useState(0);
+  const [empty, setEmpty] = useState(true);
 
   const getUserCart = async () => {
     try {
       const usrnme = user.Username;
       const response = await fetch(`http://localhost:5000/user_cart/${usrnme}`);
       const jsonData = await response.json();
+      if(jsonData.length!==0){
+        setEmpty(false);
+      }
       var total = 0;
       jsonData.forEach(dish => {
         total += dish.price * dish.quantity;
@@ -76,8 +80,8 @@ const ListUserCart = () => {
               </div>
             </div>
           </div>
-          <Link to="/menu"> <button type="button"> Go back to Menu </button> </Link>
-          <Link to="/online_checkout"> <button type="button"> Checkout </button> </Link>
+          <Link to="/menu"> <button type="button" className="btn btn-primary btn-lg btn-block"> Go back to Menu </button> </Link>
+          <Link to="/online_checkout"> <button type="button" disabled={empty} className="btn btn-primary btn-lg btn-block"> Checkout </button> </Link>
         </div>
         <br />
       </div>
