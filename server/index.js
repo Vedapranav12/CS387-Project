@@ -709,8 +709,9 @@ app.post("/hire_tablemanager", async (req, res) => {
 });
 
 app.post("/hire_delperson", async (req, res) => {
-    const { usrnme, nme, contact, salary, pass } = req.body;
-    pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')));`, [usrnme, nme, contact, salary, pass], (err, results) => {
+    const { usrnme, nme, contact, salary, pass, zip } = req.body;
+    console.log(req.body.contact);
+    pool.query(`insert into Delivery_Man values ($1,$2,$3,$4,crypt($5,gen_salt('bf')),$6);`, [usrnme, nme, contact, salary, pass, zip], (err, results) => {
         if (err) {
             console.log(err)
             res.status(400).send({ message: 'Please try again later' });
