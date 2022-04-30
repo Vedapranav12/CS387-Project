@@ -6,23 +6,23 @@ import { useContext } from "react";
 import GlobalContext from '../providers/GlobalContext';
 
 const OnlineCheckout = () => {
-    const globalContext = useContext(GlobalContext);
-    const user = globalContext.user;
-    const [CheckIng, setCheckIng] = useState(true);
-    const [orderP, setorderP] = useState(false);
-    const [Inputs, SetInputs] = useState({
-      Name: 'my name',
-      Contact: '1234567890',
-      Address: 'my addr',
-      Zip: '1234'
-    })
-    const [Errors, SetErrors] = useState({
-      Address: '',
-      Zip: '',
-      Ing: ''
-    })
-    // const [Isvalid, SetIsValid] = useState(false);
-    const [IsPending, setIsPending] = useState(false);
+  const globalContext = useContext(GlobalContext);
+  const user = globalContext.user;
+  const [CheckIng, setCheckIng] = useState(true);
+  const [orderP, setorderP] = useState(false);
+  const [Inputs, SetInputs] = useState({
+    Name: 'my name',
+    Contact: '1234567890',
+    Address: 'my addr',
+    Zip: '1234'
+  })
+  const [Errors, SetErrors] = useState({
+    Address: '',
+    Zip: '',
+    Ing: ''
+  })
+  // const [Isvalid, SetIsValid] = useState(false);
+  const [IsPending, setIsPending] = useState(false);
 
   const getUserDetails = async () => {
     try {
@@ -91,14 +91,14 @@ const OnlineCheckout = () => {
       const usrnme = user.Username;
       const response = await fetch(`http://localhost:5000/insuff_ing_onl/${usrnme}`);
       const jsonData = await response.json();
-      if(jsonData.length>0){
-        ingAvail=false;
+      if (jsonData.length > 0) {
+        ingAvail = false;
         setCheckIng(false);
-        errors.Ing= "Sorry, we do not have sufficient Ingredients";
+        errors.Ing = "Sorry, we do not have sufficient Ingredients";
       }
     } catch (err) {
       console.error(err.message);
-    }    
+    }
     console.log(ingAvail);
     SetErrors(errors);
     return ingAvail;
@@ -111,17 +111,17 @@ const OnlineCheckout = () => {
         setIsPending(true);
         const usrnme = user.Username;
         // const usrnme = 'whubbocks0';
-        const Name=Inputs.Name;
-        const Address=Inputs.Address;
-        const Zip=Inputs.Zip;
-        const Contact=Inputs.Contact;
-        var currentdate = new Date(); 
+        const Name = Inputs.Name;
+        const Address = Inputs.Address;
+        const Zip = Inputs.Zip;
+        const Contact = Inputs.Contact;
+        var currentdate = new Date();
         var timestamp = currentdate.getDate() + "-"
-                + (currentdate.getMonth()+1)  + "-" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+          + (currentdate.getMonth() + 1) + "-"
+          + currentdate.getFullYear() + " "
+          + currentdate.getHours() + ":"
+          + currentdate.getMinutes() + ":"
+          + currentdate.getSeconds();
         fetch('http://localhost:5000/editprofile', {
           method: 'POST',
           headers: { "Content-Type": "application/json" },
@@ -129,14 +129,14 @@ const OnlineCheckout = () => {
         }).then(res => {
           console.log(res);
           checkIngredients().then(ingAvail => {
-            if(ingAvail){
-              fetch('http://localhost:5000/ins_ord',{
+            if (ingAvail) {
+              fetch('http://localhost:5000/ins_ord', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ usrnme, timestamp })
               }).then(res => {
                 console.log(res);
-                if(res.status===200){
+                if (res.status === 200) {
                   setorderP(true);
                 }
               })
@@ -154,55 +154,15 @@ const OnlineCheckout = () => {
 
   return (
     <Fragment>
-      <div className="demo centerMy">
-        <div className="container text-center">
-         
-          <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour">Delivery Address</h2>
-          <div className="card shadow-lg p-3 mb-5 bg-white rounded demo2 ChangeTextFont">
-            <form onSubmit={handleSubmit}>
 
-              <div className="row justify-content-center">
-                <div className="form-group text-left  col-sm-5">
-                  <label>Address
-                    <input className="form-control"
-                      type="text"
-                      name="Address"
-                      value={Inputs.Address}
-                      onChange={e => SetInputs( { ...Inputs, Address:e.target.value})}
-                    />
-                  </label>
-                  <div className="text-danger">{Errors.Address}</div>
-                </div>
-                <div className="form-group text-left  col-sm-5">
-                  <label>Zip code
-                    <input className="form-control"
-                      type="text"
-                      name="Zip"
-                      value={Inputs.Zip}
-                      onChange={e => SetInputs( { ...Inputs, Zip:e.target.value})}
-                    />
-                  </label>
-                  <div className="text-danger">{Errors.Zip}</div>
-                </div>
-                <div className="text-danger">{Errors.Ing}</div>
-                <div className="col-sm-6">
-                  {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Place Order</button>}
-                  <Link to="/user_cart"> <button type="button" className="btn btn-primary btn-lg btn-block"> Go back to Cart </button> </Link>
-                  {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Ordering...</button>}
-                </div>
-              </div>
-            </form>
-          </div>
-          {orderP? <h2 className="btn btn-primary btn-lg btn-block">Order placed</h2> : <h2 className="btn btn-primary btn-lg btn-block">Order Not placed</h2>}
-        </div>
-      </div>
-      
+
       {globalContext.fetchingUser === true ? 'Loading...' :
         <div>
           {
             user.identifyRole === 'Customer' ?
               <div className="demo centerMy">
                 <div className="container text-center">
+
                   <h2 className="h2 mb-4 font-weight-bold shadow-lg p-3 rounded textColour">Delivery Address</h2>
                   <div className="card shadow-lg p-3 mb-5 bg-white rounded demo2 ChangeTextFont">
                     <form onSubmit={handleSubmit}>
@@ -230,14 +190,16 @@ const OnlineCheckout = () => {
                           </label>
                           <div className="text-danger">{Errors.Zip}</div>
                         </div>
-
+                        <div className="text-danger">{Errors.Ing}</div>
                         <div className="col-sm-6">
                           {!IsPending && <button className="btn btn-primary btn-lg btn-block" >Place Order</button>}
-                          {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Submitting...</button>}
+                          <Link to="/user_cart"> <button type="button" className="btn btn-primary btn-lg btn-block"> Go back to Cart </button> </Link>
+                          {IsPending && <button className="btn btn-primary btn-lg btn-block" disabled>Ordering...</button>}
                         </div>
                       </div>
                     </form>
                   </div>
+                  {orderP ? <h2 className="btn btn-primary btn-lg btn-block">Order placed</h2> : <h2 className="btn btn-primary btn-lg btn-block">Order Not placed</h2>}
                 </div>
               </div>
               : 'Cannot Access this page'

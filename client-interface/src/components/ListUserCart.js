@@ -19,7 +19,7 @@ const ListUserCart = () => {
       const usrnme = user.Username;
       const response = await fetch(`http://localhost:5000/user_cart/${usrnme}`);
       const jsonData = await response.json();
-      if(jsonData.length!==0){
+      if (jsonData.length !== 0) {
         setEmpty(false);
       }
       var total = 0;
@@ -84,19 +84,17 @@ const ListUserCart = () => {
                       </div>
                     </div>
                   </div>
-                  <Link to="/menu"> <button type="button"  className="btn btn-primary btn-lg btn-block"> Go back to Menu </button> </Link>
-                  <Link to="/online_checkout"> <button type="button"  className="btn btn-primary btn-lg btn-block"> Checkout </button> </Link>
+                  <Link to="/menu"> <button type="button" className="btn btn-primary btn-lg btn-block"> Go back to Menu </button> </Link>
+                  <Link to="/online_checkout"> <button type="button" className="btn btn-primary btn-lg btn-block"> Checkout </button> </Link>
                 </div>
                 <br />
               </div>
-            </div>
-          </div>
-         
+
               : 'Cannot Access this page'
           }
-        </div>
+        </div >
       }
-    </Fragment>
+    </Fragment >
   );
 
 };
